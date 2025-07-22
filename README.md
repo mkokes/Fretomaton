@@ -1,17 +1,17 @@
 # Fretomaton
 
-A React application for generating precise, printable fretboard templates for ukuleles and guitars. This tool helps instrument makers and luthiers create accurate templates for woodworking projects.
+A React application for generating precise, printable fretboard templates for guitars, basses, ukuleles, and other stringed instruments. This tool helps instrument makers and luthiers create accurate templates for woodworking projects.
 
 ## Features
 
 - **Precise Calculations**: Uses standard equal temperament formulas for mathematically accurate fret positioning
-- **Multiple Instruments**: Supports both ukuleles and guitars with preset configurations
+- **Multiple Instruments**: Supports electric guitars, acoustic guitars, classical guitars, bass guitars, and ukuleles with preset configurations
 - **Dual Unit System**: Work in metric (mm) or imperial (inches) with real-time conversion
-- **Print-Ready Output**: Generates templates at true 1:1 scale for direct use as cutting guides
-- **Multi-Page Support**: Automatically splits long templates across multiple pages with alignment marks
+- **Print-Ready Output**: Generates SVG templates at true 1:1 scale for direct use as cutting guides
 - **Real-Time Preview**: See your fretboard template update as you adjust parameters
 - **Comprehensive Validation**: Built-in validation ensures realistic and buildable measurements
 - **Responsive Design**: Works on desktop and tablet devices
+- **Preset Management**: Quick setup with industry-standard instrument configurations
 
 ## Technology Stack
 
@@ -97,6 +97,16 @@ yarn deploy:simple
 ./deploy-simple.sh
 ```
 
+3. **Debug Deployment** (verbose output for troubleshooting):
+```bash
+./deploy-debug.sh
+```
+
+4. **Check Remote Server** (inspect current deployment):
+```bash
+./check-remote.sh
+```
+
 ### Manual Deployment
 
 1. Build the project:
@@ -122,27 +132,28 @@ The deployment scripts will:
 
 ### Basic Configuration
 
-1. **Select an Instrument Preset**: Choose from Concert Ukulele, Tenor Ukulele, Acoustic Guitar, or Classical Guitar for quick setup
-2. **Adjust Scale Length**: Set the distance from nut to bridge (typically 15-17" for ukuleles, 24-26" for guitars)
+1. **Select an Instrument Preset**: Choose from 20+ presets including electric guitars, acoustic guitars, bass guitars, classical guitars, and ukuleles for quick setup
+2. **Adjust Scale Length**: Set the distance from nut to bridge (typically 11-22" for ukuleles, 24-26" for guitars, 30-35" for basses)
 3. **Configure String Spacing**: Set spacing between string centers at both nut and bridge
-4. **Set Fretboard Dimensions**: Define the width of the fretboard at nut and bridge
+4. **Set Neck Width**: Define the width of the neck at nut and bridge
 5. **Choose Fret Count**: Select how many frets to include (1-24 range)
+6. **Set Fret Wire Width**: Adjust the thickness of fret slots for your fret wire
 
 ### Advanced Options
 
-- **Unit System**: Toggle between metric (mm) and imperial (inches)
-- **String Compensation**: Enable slight adjustments for different string gauges
-- **Fret Wire Width**: Adjust the thickness of fret slots
+- **Unit System**: Toggle between metric (mm) and imperial (inches) with real-time conversion
+- **Real-time Preview**: See your fretboard template update instantly as you adjust parameters
+- **SVG Output**: Scalable vector graphics ensure perfect print quality at any size
 
 ### Printing Instructions
 
-1. Click the "Print Template" button
-2. Configure print settings:
+1. Configure your instrument parameters and preview the template
+2. Use your browser's print function (Ctrl+P or Cmd+P)
+3. Configure print settings:
    - Paper size (A4 or US Letter)
-   - Orientation (Landscape recommended)
-3. **Critical**: Set printer to 100% scale (no scaling)
-4. Verify accuracy by measuring the ruler on the printed template
-5. For multi-page templates, carefully align pages using the overlap marks
+   - Orientation (Landscape recommended for longer instruments)
+4. **Critical**: Set printer to 100% scale (no scaling)
+5. Print and verify accuracy by measuring the scale length on the printed template
 
 ## Project Structure
 
@@ -166,6 +177,9 @@ src/
 ```
 ├── deploy.sh           # Full automated deployment script
 ├── deploy-simple.sh    # Simple deployment with manual rsync
+├── deploy-debug.sh     # Verbose deployment for troubleshooting
+├── check-remote.sh     # Check current remote server state
+├── .env.example        # Environment variables template
 └── dist/               # Production build output (generated)
 ```
 
@@ -183,12 +197,11 @@ This ensures that each fret produces a semitone interval, with the 12th fret pos
 
 The application enforces realistic measurement ranges:
 
-- **Scale Length**: 300-700mm (11.8-27.6 inches)
-- **String Count**: 4-6 strings
+- **Scale Length**: 10-40 inches (254-1016mm) - covers ukuleles to extended range basses
 - **Fret Count**: 1-24 frets
-- **String Spacing**: 8-15mm (0.31-0.59 inches)
-- **Fretboard Width**: 30-70mm (1.18-2.76 inches)
-- **Fret Wire Width**: 1-3mm (0.04-0.12 inches)
+- **Neck Width**: 0.5-4 inches (12.7-101.6mm) - from narrow ukulele necks to wide bass necks
+- **String Spacing**: 0.5-4 inches (12.7-101.6mm) - nut and bridge string spacing
+- **Fret Wire Width**: 0.01-0.2 inches (0.254-5.08mm) - slot width for fret wire
 
 ## Preset Configurations
 
@@ -244,8 +257,8 @@ For best results when printing templates:
 1. **Printer Settings**: Use highest quality settings
 2. **Paper**: Use heavy paper (cardstock) for durability
 3. **Scaling**: Always print at 100% - never scale to fit
-4. **Verification**: Measure the printed ruler to confirm accuracy
-5. **Multi-page**: Use alignment marks for precise page joining
+4. **Verification**: Measure the printed scale length to confirm accuracy
+5. **SVG Quality**: The SVG format ensures crisp lines at any print size
 
 ## Browser Compatibility
 
@@ -271,8 +284,9 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - Equal temperament mathematics based on standard musical theory
 - Instrument measurements from traditional luthiery practices
-- UI components powered by Ant Design
+- UI styling powered by Tailwind CSS
 - Testing framework provided by Vitest
+- SVG rendering for precise, scalable templates
 
 ## Support
 
