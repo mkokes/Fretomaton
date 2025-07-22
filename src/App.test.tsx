@@ -9,14 +9,14 @@ describe('Preset Selection', () => {
     // Find the preset dropdown (it's the only combobox on the page)
     const presetSelect = screen.getByRole('combobox');
 
-    // Initially should show "Select a preset..."
-    expect(presetSelect).toHaveValue('');
-
-    // Select a preset
-    fireEvent.change(presetSelect, { target: { value: 'fenderStandard' } });
-
-    // The dropdown should now show the selected value
+    // Initially should show "fenderStandard" since that matches the default values
     expect(presetSelect).toHaveValue('fenderStandard');
+
+    // Select a different preset
+    fireEvent.change(presetSelect, { target: { value: 'gibsonStandard' } });
+
+    // The dropdown should now show the newly selected value
+    expect(presetSelect).toHaveValue('gibsonStandard');
   });
 
   it('should update form values when preset is selected', () => {
@@ -42,8 +42,7 @@ describe('Preset Selection', () => {
 
     const presetSelect = screen.getByRole('combobox');
 
-    // Select a preset first
-    fireEvent.change(presetSelect, { target: { value: 'fenderStandard' } });
+    // Initially should have fenderStandard selected
     expect(presetSelect).toHaveValue('fenderStandard');
 
     // Select the empty option

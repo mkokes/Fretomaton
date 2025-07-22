@@ -17,7 +17,7 @@ const FretTemplateCalculator = () => {
   const [neckWidth, setNeckWidth] = useState<number>(1.75);
   const [fretWireWidth, setFretWireWidth] = useState<number>(0.04);
   const [units, setUnits] = useState<'inches' | 'mm'>('inches');
-  const [selectedPreset, setSelectedPreset] = useState<string>('');
+  const [selectedPreset, setSelectedPreset] = useState<string>('fenderStandard');
 
   // Calculate fret positions using the 12th root of 2 formula
   const fretPositions = useMemo((): FretPosition[] => {
