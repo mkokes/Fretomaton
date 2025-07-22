@@ -113,7 +113,7 @@ if rsync -avz --delete \
     --exclude='.DS_Store' \
     --exclude='Thumbs.db' \
     --progress \
-    "$LOCAL_DIST_PATH" \
+    "${LOCAL_DIST_PATH%/}/" \
     "$REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH/"; then
     
     print_success "Deployment completed successfully!"
