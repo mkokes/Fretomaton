@@ -1,0 +1,172 @@
+{
+  "electricGuitars": {
+    "fenderStandard": {
+      "scaleLength": 25.5,
+      "nutWidth": 1.375,
+      "bridgeWidth": 2.0625,
+      "frets": 24,
+      "name": "Fender Standard (Strat/Tele)",
+      "description": "25.5\" (648mm) - Fender standard scale length used on Stratocasters, Telecasters, and most Fender models"
+    },
+    "gibsonStandard": {
+      "scaleLength": 24.75,
+      "nutWidth": 1.375,
+      "bridgeWidth": 2.0625,
+      "frets": 22,
+      "name": "Gibson Standard (Les Paul/SG)",
+      "description": "24.75\" (629mm) - Gibson standard scale length used on Les Pauls, SGs, and most Gibson models"
+    },
+    "prsStandard": {
+      "scaleLength": 25.0,
+      "nutWidth": 1.375,
+      "bridgeWidth": 2.0625,
+      "frets": 24,
+      "name": "PRS Standard",
+      "description": "25\" (635mm) - Paul Reed Smith standard scale length"
+    },
+    "shortScale": {
+      "scaleLength": 24.0,
+      "nutWidth": 1.375,
+      "bridgeWidth": 2.0625,
+      "frets": 22,
+      "name": "Short Scale Electric",
+      "description": "24\" (610mm) - Short scale, used on some student guitars and certain vintage models"
+    }
+  },
+  "acousticGuitars": {
+    "martinStandard": {
+      "scaleLength": 25.4,
+      "nutWidth": 1.75,
+      "bridgeWidth": 2.125,
+      "frets": 20,
+      "name": "Martin Standard",
+      "description": "25.4\" (645mm) - Martin standard scale length (often called \"long scale\")"
+    },
+    "taylorStandard": {
+      "scaleLength": 24.9,
+      "nutWidth": 1.75,
+      "bridgeWidth": 2.125,
+      "frets": 20,
+      "name": "Taylor Standard",
+      "description": "24.9\" (632mm) - Taylor standard scale length"
+    },
+    "gibsonAcoustic": {
+      "scaleLength": 24.75,
+      "nutWidth": 1.75,
+      "bridgeWidth": 2.125,
+      "frets": 20,
+      "name": "Gibson Acoustic",
+      "description": "24.75\" (629mm) - Gibson acoustic standard, same as their electrics"
+    },
+    "parlorGuitar": {
+      "scaleLength": 23.5,
+      "nutWidth": 1.625,
+      "bridgeWidth": 2.0,
+      "frets": 19,
+      "name": "Parlor Guitar",
+      "description": "23.5\" (597mm) - Parlor guitar scale length"
+    }
+  },
+  "bassGuitars": {
+    "bassLongScale": {
+      "scaleLength": 34.0,
+      "nutWidth": 1.5,
+      "bridgeWidth": 2.5,
+      "frets": 24,
+      "name": "Bass Long Scale",
+      "description": "34\" (864mm) - Standard long scale bass"
+    },
+    "bassMediumScale": {
+      "scaleLength": 32.0,
+      "nutWidth": 1.5,
+      "bridgeWidth": 2.5,
+      "frets": 24,
+      "name": "Bass Medium Scale",
+      "description": "32\" (813mm) - Medium scale bass"
+    },
+    "bassShortScale": {
+      "scaleLength": 30.0,
+      "nutWidth": 1.5,
+      "bridgeWidth": 2.5,
+      "frets": 24,
+      "name": "Bass Short Scale",
+      "description": "30\" (762mm) - Short scale bass"
+    },
+    "bassExtraLong": {
+      "scaleLength": 35.0,
+      "nutWidth": 1.5,
+      "bridgeWidth": 2.5,
+      "frets": 24,
+      "name": "Bass Extra Long Scale",
+      "description": "35\" (889mm) - Extra long scale (used by some manufacturers like Warwick)"
+    }
+  },
+  "classical": {
+    "classical": {
+      "scaleLength": 25.6,
+      "nutWidth": 2.0,
+      "bridgeWidth": 2.25,
+      "frets": 19,
+      "name": "Classical Guitar",
+      "description": "25.6\" (650mm) - Traditional classical guitar scale length"
+    }
+  },
+  "ukuleles": {
+    "ukuleleSopranino": {
+      "scaleLength": 11.0,
+      "nutWidth": 1.0,
+      "bridgeWidth": 1.25,
+      "frets": 15,
+      "name": "Sopranino/Piccolo Ukulele",
+      "description": "11\" (279mm)"
+    },
+    "ukuleleSoprano": {
+      "scaleLength": 13.0,
+      "nutWidth": 1.0,
+      "bridgeWidth": 1.375,
+      "frets": 17,
+      "name": "Soprano Ukulele",
+      "description": "13\" (330mm)"
+    },
+    "ukuleleConcert": {
+      "scaleLength": 15.0,
+      "nutWidth": 1.125,
+      "bridgeWidth": 1.5,
+      "frets": 18,
+      "name": "Concert Ukulele",
+      "description": "15\" (381mm)"
+    },
+    "ukuleleTenor": {
+      "scaleLength": 17.0,
+      "nutWidth": 1.25,
+      "bridgeWidth": 1.625,
+      "frets": 19,
+      "name": "Tenor Ukulele",
+      "description": "17\" (432mm)"
+    },
+    "ukuleleBaritone": {
+      "scaleLength": 19.0,
+      "nutWidth": 1.375,
+      "bridgeWidth": 1.75,
+      "frets": 21,
+      "name": "Baritone Ukulele",
+      "description": "19\" (483mm)"
+    },
+    "ukuleleBass": {
+      "scaleLength": 20.5,
+      "nutWidth": 1.5,
+      "bridgeWidth": 2.0,
+      "frets": 18,
+      "name": "Bass Ukulele",
+      "description": "20.5\" (521mm)"
+    },
+    "ukuleleContrabass": {
+      "scaleLength": 22.0,
+      "nutWidth": 1.625,
+      "bridgeWidth": 2.125,
+      "frets": 16,
+      "name": "Contrabass Ukulele",
+      "description": "22\" (559mm)"
+    }
+  }
+}
