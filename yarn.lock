@@ -1003,6 +1003,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^24.1.0":
+  version: 24.1.0
+  resolution: "@types/node@npm:24.1.0"
+  dependencies:
+    undici-types: ~7.8.0
+  checksum: 01f9a97909eec619d937af3bc00ac49461e1846656b4d060f648145df06508eb6d77c200637a792481ee93a73976ced46cfbbdfe307e79be0f58ccdc415dfcd2
+  languageName: node
+  linkType: hard
+
 "@types/react-dom@npm:^19.1.6":
   version: 19.1.6
   resolution: "@types/react-dom@npm:19.1.6"
@@ -1747,9 +1756,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.5.173":
-  version: 1.5.188
-  resolution: "electron-to-chromium@npm:1.5.188"
-  checksum: 5e0ae772bd28472e523e7f684dbb2b37d80e270b52a74e9bc6c8ae21563d77b54f5ca602cf7951aa6e2c6df574d87c4fbd11c9bff2f21b83d6cfa83f047a6e92
+  version: 1.5.189
+  resolution: "electron-to-chromium@npm:1.5.189"
+  checksum: 2348aa5b6acd7c1213e7d0bf56e0307bdde5c30350d25705ae5cb26c5f3a2d7c8fe16bbb94f6fa5bd291811e4454351800d15487653b295dbbaaeb71e40c6d02
   languageName: node
   linkType: hard
 
@@ -2191,6 +2200,7 @@ __metadata:
     "@testing-library/jest-dom": ^6.6.3
     "@testing-library/react": ^16.3.0
     "@testing-library/user-event": ^14.6.1
+    "@types/node": ^24.1.0
     "@types/react": ^19.1.8
     "@types/react-dom": ^19.1.6
     "@vitejs/plugin-react": ^4.6.0
@@ -3912,6 +3922,13 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 1b503525a88ff0ff5952e95870971c4fb2118c17364d60302c21935dedcd6c37e6a0a692f350892bafcef6f4a16d09073fe461158547978d2f16fbe4cb18581c
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~7.8.0":
+  version: 7.8.0
+  resolution: "undici-types@npm:7.8.0"
+  checksum: 59521a5b9b50e72cb838a29466b3557b4eacbc191a83f4df5a2f7b156bc8263072b145dc4bb8ec41da7d56a7e9b178892458da02af769243d57f801a50ac5751
   languageName: node
   linkType: hard
 

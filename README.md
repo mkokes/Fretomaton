@@ -64,7 +64,7 @@ yarn dev
 
 ## Deployment
 
-### Setup
+### Environment Setup
 
 1. **Configure deployment settings**:
 ```bash
@@ -73,11 +73,26 @@ cp .env.example .env
 
 2. **Edit `.env` with your server details**:
 ```bash
+# Deployment Configuration
 DEPLOY_REMOTE_USER=your_username
 DEPLOY_REMOTE_HOST=your.server.ip.address
 DEPLOY_REMOTE_PATH=/path/to/your/web/directory
 DEPLOY_LOCAL_DIST_PATH=./dist/
+
+# Build Configuration
+# The subfolder path where the app will be deployed
+# Use "/" for root deployment or "/subfolder" for subfolder deployment
+VITE_BASE_PATH=/fretomaton
 ```
+
+### Subfolder Deployment
+
+If your application will be deployed to a subfolder (e.g., `https://yourdomain.com/fretomaton/`), configure the `VITE_BASE_PATH` environment variable:
+
+- **Root deployment**: Set `VITE_BASE_PATH=/` or leave it empty
+- **Subfolder deployment**: Set `VITE_BASE_PATH=/your-subfolder-name`
+
+This ensures that all asset paths (JavaScript, CSS, images) are correctly prefixed for your deployment location. The build process will automatically adjust all asset URLs to work with your subfolder configuration.
 
 ### Automated Deployment
 
@@ -127,6 +142,37 @@ The deployment scripts will:
 - Show deployment status and summary
 
 **Note**: The `.env` file is excluded from git for security. Make sure to configure it on each environment where you want to deploy.
+
+### Troubleshooting Deployment
+
+#### 404 Errors for Assets (JS/CSS files)
+
+If you see 404 errors for JavaScript or CSS files after deployment, this usually indicates an incorrect `VITE_BASE_PATH` configuration:
+
+1. **Check your deployment URL**: If your app is accessible at `https://yourdomain.com/fretomaton/`, ensure `VITE_BASE_PATH=/fretomaton`
+2. **Rebuild after changing `.env`**: Always run `yarn build` after updating the `VITE_BASE_PATH` value
+3. **Verify asset paths**: Check the built `dist/index.html` file - asset paths should match your deployment structure
+
+#### Common Base Path Examples
+
+```bash
+# Root deployment (https://yourdomain.com/)
+VITE_BASE_PATH=/
+
+# Single subfolder (https://yourdomain.com/fretomaton/)
+VITE_BASE_PATH=/fretomaton
+
+# Nested subfolder (https://yourdomain.com/tools/fretomaton/)
+VITE_BASE_PATH=/tools/fretomaton
+```
+
+#### SSH Connection Issues
+
+If deployment fails with SSH errors:
+
+1. **Test SSH connection**: `ssh username@hostname`
+2. **Check SSH key setup**: Ensure your SSH key is added to the server
+3. **Verify server path**: Ensure the `DEPLOY_REMOTE_PATH` directory exists and is writable
 
 ## Usage Guide
 
