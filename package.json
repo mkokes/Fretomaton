@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "deploy": "./deploy.sh",
+    "deploy:simple": "./deploy-simple.sh"
   },
   "dependencies": {
     "lucide-react": "^0.525.0",

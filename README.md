@@ -18,7 +18,7 @@ A React application for generating precise, printable fretboard templates for uk
 - **React 18+** with functional components and hooks
 - **TypeScript** for type safety and better development experience
 - **Vite** for fast development and optimized builds
-- **Ant Design v5** for professional UI components
+- **Tailwind CSS** for styling and responsive design
 - **Vitest** for comprehensive unit testing
 - **ESLint** with React-specific configuration
 - **Yarn** for package management
@@ -59,6 +59,64 @@ yarn dev
 - `yarn test:ui` - Run tests with UI interface
 - `yarn test:run` - Run tests once without watch mode
 - `yarn lint` - Run ESLint checks
+- `yarn deploy` - Build and deploy to production server
+- `yarn deploy:simple` - Build and show deployment command
+
+## Deployment
+
+### Setup
+
+1. **Configure deployment settings**:
+```bash
+cp .env.example .env
+```
+
+2. **Edit `.env` with your server details**:
+```bash
+DEPLOY_REMOTE_USER=your_username
+DEPLOY_REMOTE_HOST=your.server.ip.address
+DEPLOY_REMOTE_PATH=/path/to/your/web/directory
+DEPLOY_LOCAL_DIST_PATH=./dist/
+```
+
+### Automated Deployment
+
+The project includes deployment scripts for easy production deployment:
+
+1. **Full Deployment** (runs tests, builds, and deploys):
+```bash
+yarn deploy
+# or
+./deploy.sh
+```
+
+2. **Simple Deployment** (runs tests, builds, shows rsync command):
+```bash
+yarn deploy:simple
+# or
+./deploy-simple.sh
+```
+
+### Manual Deployment
+
+1. Build the project:
+```bash
+yarn build
+```
+
+2. Deploy using rsync (replace with your server details):
+```bash
+rsync -avz --delete --progress ./dist/ username@server:/path/to/web/directory/
+```
+
+The deployment scripts will:
+- Load configuration from `.env` file
+- Run all tests to ensure code quality
+- Build the project for production
+- Deploy to the configured server using rsync
+- Show deployment status and summary
+
+**Note**: The `.env` file is excluded from git for security. Make sure to configure it on each environment where you want to deploy.
 
 ## Usage Guide
 
@@ -90,26 +148,25 @@ yarn dev
 
 ```
 src/
-├── components/          # React components
-│   ├── ConfigurationForm.tsx
-│   ├── FretboardRenderer.tsx
-│   ├── PrintLayout.tsx
-│   └── PrintButton.tsx
-├── hooks/              # Custom React hooks
-│   ├── useFretboardCalculations.ts
-│   └── useUnitConversion.ts
-├── utils/              # Utility functions
-│   ├── fretCalculations.ts
-│   └── unitConversions.ts
+├── data/               # Static data and presets
+│   └── presets.json    # Instrument preset configurations
 ├── types/              # TypeScript type definitions
-│   └── index.ts
+│   └── presets.ts      # Preset type definitions
 ├── tests/              # Unit tests
-│   ├── fretCalculations.test.ts
-│   ├── unitConversions.test.ts
-│   ├── ConfigurationForm.test.tsx
-│   ├── hooks.test.ts
+│   ├── unitConversion.test.tsx
 │   └── setup.ts
-└── App.tsx             # Main application component
+├── App.tsx             # Main application component
+├── App.test.tsx        # App component tests
+├── SVG.test.tsx        # SVG template tests
+└── main.tsx            # Application entry point
+```
+
+### Deployment Files
+
+```
+├── deploy.sh           # Full automated deployment script
+├── deploy-simple.sh    # Simple deployment with manual rsync
+└── dist/               # Production build output (generated)
 ```
 
 ## Mathematical Accuracy
@@ -135,13 +192,35 @@ The application enforces realistic measurement ranges:
 
 ## Preset Configurations
 
-### Ukuleles
-- **Concert Ukulele**: 381mm (15") scale, 4 strings
-- **Tenor Ukulele**: 432mm (17") scale, 4 strings
+### Electric Guitars
+- **Fender Standard**: 25.5" (648mm) scale - Stratocaster/Telecaster
+- **Gibson Standard**: 24.75" (629mm) scale - Les Paul/SG
+- **PRS Standard**: 25" (635mm) scale
+- **Short Scale Electric**: 24" (610mm) scale
 
-### Guitars
-- **Acoustic Guitar**: 648mm (25.5") scale, 6 strings
-- **Classical Guitar**: 650mm (25.6") scale, 6 strings
+### Acoustic Guitars
+- **Martin Standard**: 25.4" (645mm) scale
+- **Taylor Standard**: 24.9" (632mm) scale
+- **Gibson Acoustic**: 24.75" (629mm) scale
+- **Parlor Guitar**: 23.5" (597mm) scale
+
+### Classical Guitar
+- **Classical Guitar**: 25.6" (650mm) scale
+
+### Bass Guitars
+- **Bass Long Scale**: 34" (864mm) scale
+- **Bass Medium Scale**: 32" (813mm) scale
+- **Bass Short Scale**: 30" (762mm) scale
+- **Bass Extra Long Scale**: 35" (889mm) scale
+
+### Ukuleles
+- **Sopranino/Piccolo**: 11" (279mm) scale
+- **Soprano**: 13" (330mm) scale
+- **Concert**: 15" (381mm) scale
+- **Tenor**: 17" (432mm) scale
+- **Baritone**: 19" (483mm) scale
+- **Bass Ukulele**: 20.5" (521mm) scale
+- **Contrabass**: 22" (559mm) scale
 
 ## Testing
 
