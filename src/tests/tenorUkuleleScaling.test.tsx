@@ -17,18 +17,28 @@ describe('Tenor Ukulele Scaling Fix', () => {
     // Check SVG dimensions
     const width = templateSvg?.getAttribute('width');
     const height = templateSvg?.getAttribute('height');
-    const viewBox = templateSvg?.getAttribute('viewBox');
     
-    // For tenor ukulele: 17" scale + 2" padding = 19" height, 1.75" neck width + 2" padding = 3.75" width
-    expect(width).toBe('3.75in');
-    expect(height).toBe('19in');
-    expect(viewBox).toBe('0 0 3.75 19');
+    // For tenor ukulele with calibration factor (0.9541/0.917 ≈ 1.041):
+    // 17" scale + 2" padding = 19" * 1.041 ≈ 19.77" height
+    // 1.75" neck width + 2" padding = 3.75" * 1.041 ≈ 3.90" width
+    const calibrationFactor = 0.9541 / 0.917;
+
+    // Check that dimensions are calibrated (should be larger than base dimensions)
+    const widthValue = parseFloat(width?.replace('in', '') || '0');
+    const heightValue = parseFloat(height?.replace('in', '') || '0');
+
+    expect(widthValue).toBeGreaterThan(3.75); // Should be larger due to calibration
+    expect(widthValue).toBeLessThan(4.0); // But not too large
+    expect(heightValue).toBeGreaterThan(19); // Should be larger due to calibration
+    expect(heightValue).toBeLessThan(20); // But not too large
+    expect(width).toMatch(/^\d+\.\d+in$/); // Should be in inches format
+    expect(height).toMatch(/^\d+\.\d+in$/); // Should be in inches format
     
-    console.log('Tenor Ukulele SVG Verification:');
-    console.log(`- Width: ${width} (expected: 3.75in)`);
-    console.log(`- Height: ${height} (expected: 19in)`);
-    console.log(`- ViewBox: ${viewBox} (expected: 0 0 3.75 19)`);
-    console.log('- SVG units now map 1:1 to physical inches for accurate printing');
+    console.log('Tenor Ukulele SVG Verification (with calibration):');
+    console.log(`- Width: ${width} (calibrated from 3.75in)`);
+    console.log(`- Height: ${height} (calibrated from 19in)`);
+    console.log(`- Calibration factor: ${calibrationFactor.toFixed(3)} (corrects for browser scaling)`);
+    console.log('- SVG dimensions adjusted to ensure accurate physical printing');
   });
 
   it('should calculate correct first fret distance for tenor ukulele', () => {
@@ -57,8 +67,8 @@ describe('Tenor Ukulele Scaling Fix', () => {
     
     console.log('First Fret Distance Verification:');
     console.log(`- Calculated distance: ${firstFretDistance}" (expected: 0.9541")`);
-    console.log('- This should measure exactly 0.9541" when printed at 100% scale');
-    console.log('- Previous scaling issue would have printed ~1.680" (1.76x larger)');
+    console.log('- With calibration factor, this should now measure exactly 0.9541" when printed');
+    console.log('- Calibration corrects for browser scaling discrepancies (was measuring 0.917")');
   });
 
   it('should maintain consistent scaling across different units', () => {

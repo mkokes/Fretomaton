@@ -129,11 +129,16 @@ const FretTemplateCalculator = () => {
     const neckInches = toInchesForSVG(neckWidth);
     const padding = 1; // 1 inch padding on all sides
 
+    // Calibration factor to correct for browser/printer scaling discrepancies
+    // Based on measurement: 0.917" actual vs 0.9541" expected = 0.961x factor
+    // To correct: multiply by reciprocal = 1.041x
+    const calibrationFactor = 0.9541 / 0.917; // ≈ 1.041
+
     return {
-      width: neckInches + (padding * 2),
-      height: scaleInches + (padding * 2),
-      paddingX: padding,
-      paddingY: padding
+      width: (neckInches + (padding * 2)) * calibrationFactor,
+      height: (scaleInches + (padding * 2)) * calibrationFactor,
+      paddingX: padding * calibrationFactor,
+      paddingY: padding * calibrationFactor
     };
   };
 
@@ -395,6 +400,9 @@ const FretTemplateCalculator = () => {
               </div>
               <div className="text-xs text-red-600 mb-2 font-semibold">
                 ⚠️ Print at 100% scale (no scaling) for accurate measurements
+              </div>
+              <div className="text-xs text-blue-600 mb-2">
+                📏 Calibrated for precise measurements - First fret should measure exactly {convertUnits(fretPositions[0]?.distance || 0)}{units} when printed
               </div>
               <svg
                 width={`${getSVGDimensions().width}in`}

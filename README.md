@@ -202,10 +202,17 @@ If deployment fails with SSH errors:
 5. Print and verify accuracy by measuring the first fret distance
 
 #### Verification
-The templates are designed for 1:1 print accuracy. To verify:
+The templates are designed for 1:1 print accuracy with browser calibration. To verify:
 - **Tenor Ukulele**: First fret should measure exactly 0.9541" (24.23mm) from the nut
 - **Standard Guitar (25.5")**: First fret should measure exactly 1.4309" (36.34mm) from the nut
 - If measurements are ~1.76x larger than expected, check that your printer is set to 100% scale with no auto-scaling
+
+#### Calibration Notes
+The application includes automatic calibration to compensate for browser/printer scaling variations. If your measurements are still slightly off (±2-3%), this is normal due to:
+- Browser-specific SVG rendering differences
+- Printer driver scaling adjustments
+- Paper expansion/contraction
+- Measurement precision limitations
 
 ## Project Structure
 

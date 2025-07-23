@@ -33,6 +33,22 @@
       max-width: none !important;
       max-height: none !important;
       /* The width and height are now set in inches, ensuring 1:1 print scaling */
+
+      /* Additional precision controls for browser printing */
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+
+    /* Ensure the page uses standard print DPI */
+    @page {
+      margin: 0.5in;
+      size: auto;
+    }
+
+    /* Force high precision rendering */
+    body {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
   }
 }
