@@ -5,60 +5,40 @@ import App from '../App';
 describe('Print Scaling Verification', () => {
   it('should calculate correct SVG dimensions for standard guitar scale', () => {
     render(<App />);
-    
-    // Find the template SVG (not the guitar icon)
-    const allSvgs = document.querySelectorAll('svg');
-    let templateSvg = null;
-    
-    // Find the SVG with the largest viewBox (that's our template)
-    for (let i = 0; i < allSvgs.length; i++) {
-      const viewBox = allSvgs[i].getAttribute('viewBox');
-      if (viewBox) {
-        const height = parseFloat(viewBox.split(' ')[3] || '0');
-        if (height > 100) { // Template SVG should have height > 100
-          templateSvg = allSvgs[i];
-          break;
-        }
-      }
-    }
-    
+
+    // Find the template SVG by looking for the template-svg class
+    const templateSvg = document.querySelector('svg.template-svg');
+
     expect(templateSvg).toBeInTheDocument();
     
     // Get viewBox dimensions
     const viewBox = templateSvg?.getAttribute('viewBox');
     const [x, y, width, height] = viewBox?.split(' ').map(Number) || [0, 0, 0, 0];
     
-    // For a 25.5" scale length guitar:
-    // Expected: viewBox height should represent ~25.5" + padding
-    // Current calculation: (25.5 * 20) + 80 = 590
-    // This means 1 SVG unit ≠ 1 real unit, which is the problem
-    
+    // For a 25.5" scale length guitar with our new 1:1 scaling:
+    // Expected: viewBox height should be ~25.5" + 2" padding = ~27.5"
+    // This means 1 SVG unit = 1 real inch, which is correct for printing
+
     console.log('ViewBox dimensions:', { x, y, width, height });
     console.log('Scale factor analysis:');
-    console.log('- If 25.5" scale = 590 SVG units, then 1" = ~23.14 SVG units');
-    console.log('- But code uses 20x factor, creating inconsistency');
-    
-    // The issue: SVG coordinate system doesn't map to real measurements
-    expect(height).toBeGreaterThan(500); // Current broken behavior
-    
-    // What we need: SVG units that map 1:1 to physical units for printing
-    // Ideal: 25.5" scale should create viewBox height of ~25.5 + padding in real units
+    console.log('- 25.5" scale + 2" padding = 27.5" SVG height');
+    console.log('- 1 SVG unit = 1 inch (1:1 mapping for accurate printing)');
+
+    // The fix: SVG coordinate system now maps 1:1 to real measurements
+    expect(height).toBeGreaterThan(25); // At least the scale length
+    expect(height).toBeLessThan(30); // But reasonable with padding
+
+    // Verify 1:1 mapping: SVG units now correspond to physical units for printing
+    // 25.5" scale should create viewBox height of ~27.5" (25.5 + 2" padding)
   });
 
   it('should identify CSS constraints that interfere with print scaling', () => {
     render(<App />);
-    
-    const allSvgs = document.querySelectorAll('svg');
-    let templateSvg = null;
-    
-    for (let i = 0; i < allSvgs.length; i++) {
-      const viewBox = allSvgs[i].getAttribute('viewBox');
-      if (viewBox && parseFloat(viewBox.split(' ')[3] || '0') > 100) {
-        templateSvg = allSvgs[i];
-        break;
-      }
-    }
-    
+
+    // Find the template SVG by class
+    const templateSvg = document.querySelector('svg.template-svg');
+    expect(templateSvg).toBeInTheDocument();
+
     // Check problematic CSS properties
     const computedStyle = window.getComputedStyle(templateSvg!);
     const width = templateSvg?.getAttribute('width');
@@ -76,15 +56,15 @@ describe('Print Scaling Verification', () => {
 
   it('should verify measurement chart uses simple text rendering', () => {
     render(<App />);
-    
+
     // Find measurement values in the table
     const scaleCell = screen.getByText('25.5000'); // Default scale length
-    const nutCell = screen.getByText('1.6875'); // Default nut width
-    
+    const nutCell = screen.getByText('1.3750'); // Default nut width (from presets.json)
+
     // These are simple text nodes that print accurately
     expect(scaleCell).toBeInTheDocument();
     expect(nutCell).toBeInTheDocument();
-    
+
     // Text measurements don't have complex scaling - they print at font size
     console.log('Table measurements use simple text rendering');
     console.log('- No viewBox scaling');

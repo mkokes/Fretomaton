@@ -64,48 +64,34 @@ describe('Unit Conversion Display Bug Fix', () => {
   it('should maintain consistent SVG scaling across unit systems', () => {
     render(<FretTemplateCalculator />);
 
-    // Get the template SVG element (not the guitar icon)
-    // The template SVG should be inside the template layout section
-    const allSvgs = document.querySelectorAll('svg');
-    let templateSvg = null;
-
-    // Find the SVG with the largest viewBox (that's our template)
-    for (let i = 0; i < allSvgs.length; i++) {
-      const viewBox = allSvgs[i].getAttribute('viewBox');
-      if (viewBox) {
-        const height = parseFloat(viewBox.split(' ')[3] || '0');
-        if (height > 100) { // Template SVG should have height > 100
-          templateSvg = allSvgs[i];
-          break;
-        }
-      }
-    }
+    // Find the template SVG by class
+    const templateSvg = document.querySelector('svg.template-svg');
     expect(templateSvg).toBeInTheDocument();
 
     // Initially in inches (25.5" scale length)
-    // SVG viewBox should be based on inches: ~25.5 * 20 + 80 = 590 height (updated for label space)
+    // SVG viewBox should now use real dimensions: ~25.5 + 2 = 27.5 height
     const initialViewBox = templateSvg?.getAttribute('viewBox');
     const initialHeight = initialViewBox?.split(' ')[3];
     const initialHeightNum = parseFloat(initialHeight || '0');
 
-    // Should be around 590 for 25.5" scale length with label space
-    expect(initialHeightNum).toBeGreaterThan(580);
-    expect(initialHeightNum).toBeLessThan(600);
+    // Should be around 27.5 for 25.5" scale length with 2" padding
+    expect(initialHeightNum).toBeGreaterThan(25);
+    expect(initialHeightNum).toBeLessThan(30);
 
     // Switch to millimeters
     const mmRadio = screen.getByLabelText('Millimeters');
     fireEvent.click(mmRadio);
 
     // SVG viewBox should still be based on inches (converted from mm)
-    // 647mm / 25.4 = ~25.5", so viewBox height should still be ~590 (updated for label space)
+    // 647mm / 25.4 = ~25.5", so viewBox height should still be ~27.5 (25.5 + 2" padding)
     const mmViewBox = templateSvg?.getAttribute('viewBox');
     const mmHeight = mmViewBox?.split(' ')[3];
     const mmHeightNum = parseFloat(mmHeight || '0');
 
-    // Should still be around 590, NOT around 13,020 (647 * 20 + 80)
-    expect(mmHeightNum).toBeGreaterThan(580);
-    expect(mmHeightNum).toBeLessThan(600);
-    expect(mmHeightNum).not.toBeGreaterThan(1000); // Ensure it's not using raw mm values
+    // Should still be around 27.5, NOT around 650+ (raw mm values)
+    expect(mmHeightNum).toBeGreaterThan(25);
+    expect(mmHeightNum).toBeLessThan(30);
+    expect(mmHeightNum).not.toBeGreaterThan(100); // Ensure it's not using raw mm values
 
     // The heights should be very close (within 1% due to rounding)
     const heightDifference = Math.abs(initialHeightNum - mmHeightNum);
