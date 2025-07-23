@@ -199,7 +199,13 @@ If deployment fails with SSH errors:
    - Paper size (A4 or US Letter)
    - Orientation (Landscape recommended for longer instruments)
 4. **Critical**: Set printer to 100% scale (no scaling)
-5. Print and verify accuracy by measuring the scale length on the printed template
+5. Print and verify accuracy by measuring the first fret distance
+
+#### Verification
+The templates are designed for 1:1 print accuracy. To verify:
+- **Tenor Ukulele**: First fret should measure exactly 0.9541" (24.23mm) from the nut
+- **Standard Guitar (25.5")**: First fret should measure exactly 1.4309" (36.34mm) from the nut
+- If measurements are ~1.76x larger than expected, check that your printer is set to 100% scale with no auto-scaling
 
 ## Project Structure
 

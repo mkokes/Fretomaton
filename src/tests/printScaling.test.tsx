@@ -32,26 +32,29 @@ describe('Print Scaling Verification', () => {
     // 25.5" scale should create viewBox height of ~27.5" (25.5 + 2" padding)
   });
 
-  it('should identify CSS constraints that interfere with print scaling', () => {
+  it('should use explicit physical dimensions for accurate print scaling', () => {
     render(<App />);
 
     // Find the template SVG by class
     const templateSvg = document.querySelector('svg.template-svg');
     expect(templateSvg).toBeInTheDocument();
 
-    // Check problematic CSS properties
-    const computedStyle = window.getComputedStyle(templateSvg!);
+    // Check that SVG now uses explicit physical dimensions
     const width = templateSvg?.getAttribute('width');
+    const height = templateSvg?.getAttribute('height');
+    const computedStyle = window.getComputedStyle(templateSvg!);
     const maxWidth = computedStyle.maxWidth;
-    
+
     console.log('SVG styling analysis:');
-    console.log('- width attribute:', width); // "100%" - responsive
-    console.log('- maxWidth style:', maxWidth); // "400px" - constrains size
-    console.log('- This creates scaling conflicts during printing');
-    
-    // These properties cause print scaling issues
-    expect(width).toBe('100%'); // Current problematic behavior
-    expect(maxWidth).toBe('400px'); // Current problematic behavior
+    console.log('- width attribute:', width); // Should be in inches (e.g., "3.75in")
+    console.log('- height attribute:', height); // Should be in inches (e.g., "27.5in")
+    console.log('- maxWidth style:', maxWidth); // Still 400px for screen display
+    console.log('- This ensures 1:1 print scaling with explicit physical dimensions');
+
+    // Verify explicit physical dimensions are set
+    expect(width).toMatch(/^\d+(\.\d+)?in$/); // Should be in inches format like "3.75in"
+    expect(height).toMatch(/^\d+(\.\d+)?in$/); // Should be in inches format like "27.5in"
+    expect(maxWidth).toBe('400px'); // Screen display constraint remains
   });
 
   it('should verify measurement chart uses simple text rendering', () => {

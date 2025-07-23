@@ -397,9 +397,10 @@ const FretTemplateCalculator = () => {
                 ⚠️ Print at 100% scale (no scaling) for accurate measurements
               </div>
               <svg
-                width="100%"
+                width={`${getSVGDimensions().width}in`}
+                height={`${getSVGDimensions().height}in`}
                 viewBox={`0 0 ${getSVGDimensions().width} ${getSVGDimensions().height}`}
-                className="template-svg border border-gray-200 print:w-auto print:h-auto print:max-w-none"
+                className="template-svg border border-gray-200"
                 style={{ maxWidth: '400px', height: 'auto' }}
               >
                 {/* Nut label - positioned above the fretboard */}
