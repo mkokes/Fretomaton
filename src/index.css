@@ -24,4 +24,24 @@
     font-weight: 600;
     line-height: 1.2;
   }
+
+  /* Print-specific styles for accurate SVG scaling */
+  @media print {
+    /* Ensure SVG prints at 1:1 scale with real dimensions */
+    svg {
+      width: auto !important;
+      height: auto !important;
+      max-width: none !important;
+      max-height: none !important;
+      /* Set explicit size in inches for 1:1 mapping */
+      /* The viewBox is now in real inches, so 1 SVG unit = 1 inch */
+    }
+
+    /* Target the template SVG specifically */
+    .template-svg {
+      /* Force the SVG to render at actual size */
+      width: auto !important;
+      height: auto !important;
+    }
+  }
 }

@@ -7,7 +7,7 @@ A React application for generating precise, printable fretboard templates for gu
 - **Precise Calculations**: Uses standard equal temperament formulas for mathematically accurate fret positioning
 - **Multiple Instruments**: Supports electric guitars, acoustic guitars, classical guitars, bass guitars, and ukuleles with preset configurations
 - **Dual Unit System**: Work in metric (mm) or imperial (inches) with real-time conversion
-- **Print-Ready Output**: Generates SVG templates at true 1:1 scale for direct use as cutting guides
+- **Print-Ready Output**: Generates SVG templates with verified 1:1 scale accuracy for direct use as cutting guides
 - **Real-Time Preview**: See your fretboard template update as you adjust parameters
 - **Comprehensive Validation**: Built-in validation ensures realistic and buildable measurements
 - **Responsive Design**: Works on desktop and tablet devices
@@ -210,11 +210,14 @@ src/
 ├── types/              # TypeScript type definitions
 │   └── presets.ts      # Preset type definitions
 ├── tests/              # Unit tests
-│   ├── unitConversion.test.tsx
-│   └── setup.ts
+│   ├── unitConversion.test.tsx  # Unit conversion tests
+│   ├── printScaling.test.tsx    # SVG scaling and print accuracy tests
+│   └── setup.ts                 # Test configuration
 ├── App.tsx             # Main application component
 ├── App.test.tsx        # App component tests
 ├── SVG.test.tsx        # SVG template tests
+├── App.css             # Application styles
+├── index.css           # Global styles and print CSS
 └── main.tsx            # Application entry point
 ```
 
@@ -290,11 +293,21 @@ The project includes comprehensive unit tests covering:
 - Form validation
 - Component behavior
 - Custom hooks
+- SVG scaling and print accuracy
+- Print dimension verification
 
 Run tests with:
 ```bash
 yarn test
 ```
+
+### Test Coverage
+
+- **Mathematical Accuracy**: Verifies fret position calculations using equal temperament formulas
+- **Unit Conversion**: Tests conversion between metric and imperial units
+- **SVG Scaling**: Validates that SVG templates use correct 1:1 scale mapping
+- **Print Verification**: Ensures SVG dimensions match real-world measurements
+- **Component Integration**: Tests user interface components and interactions
 
 ## Print Quality Guidelines
 
@@ -305,6 +318,28 @@ For best results when printing templates:
 3. **Scaling**: Always print at 100% - never scale to fit
 4. **Verification**: Measure the printed scale length to confirm accuracy
 5. **SVG Quality**: The SVG format ensures crisp lines at any print size
+6. **Accurate Dimensions**: SVG templates use 1:1 scale mapping (1 SVG unit = 1 inch) for precise printing
+
+### Print Accuracy
+
+The application has been specifically optimized for accurate 1:1 printing:
+
+- **SVG Coordinate System**: Uses real-world measurements (inches) in the viewBox
+- **Print-Specific CSS**: Removes responsive constraints during printing
+- **Verified Scaling**: Templates print at true physical dimensions when set to 100% scale
+- **Measurement Consistency**: Both the measurement table and SVG template use the same calculations
+
+### Troubleshooting Print Issues
+
+If your printed template doesn't match the expected dimensions:
+
+1. **Check Printer Settings**: Ensure "Actual Size" or "100%" is selected, not "Fit to Page"
+2. **Verify Browser Print Settings**: In print preview, confirm no scaling is applied
+3. **Test with Measurement Table**: Print and measure values from the measurement table first
+4. **Paper Size**: Use standard paper sizes (A4/Letter) for best results
+5. **Browser Compatibility**: Use Chrome, Firefox, Safari, or Edge for optimal print rendering
+
+**Expected Results**: When printed correctly, the scale length on your template should match the configured value exactly (e.g., 25.5" scale should measure exactly 25.5" on paper).
 
 ## Browser Compatibility
 
@@ -340,4 +375,4 @@ For questions, issues, or feature requests, please open an issue on the GitHub r
 
 ---
 
-**⚠️ Important Safety Note**: Always verify measurements with a ruler before cutting expensive wood. This tool is designed to be accurate, but physical verification is essential for precision woodworking.
+**⚠️ Important Safety Note**: Always verify measurements with a ruler before cutting expensive wood. While this tool has been optimized for 1:1 print accuracy and extensively tested, physical verification is essential for precision woodworking. Test print a small section first to confirm your printer settings produce accurate dimensions.

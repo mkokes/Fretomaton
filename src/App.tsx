@@ -123,6 +123,20 @@ const FretTemplateCalculator = () => {
     return value; // Already in inches
   };
 
+  // Calculate SVG dimensions for 1:1 print scaling
+  const getSVGDimensions = () => {
+    const scaleInches = toInchesForSVG(scaleLength);
+    const neckInches = toInchesForSVG(neckWidth);
+    const padding = 1; // 1 inch padding on all sides
+
+    return {
+      width: neckInches + (padding * 2),
+      height: scaleInches + (padding * 2),
+      paddingX: padding,
+      paddingY: padding
+    };
+  };
+
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white">
       <div className="mb-8 print:hidden">
@@ -384,99 +398,99 @@ const FretTemplateCalculator = () => {
               </div>
               <svg
                 width="100%"
-                viewBox={`0 0 ${toInchesForSVG(neckWidth) * 20 + 80} ${toInchesForSVG(scaleLength) * 20 + 80}`}
-                className="border border-gray-200"
+                viewBox={`0 0 ${getSVGDimensions().width} ${getSVGDimensions().height}`}
+                className="template-svg border border-gray-200 print:w-auto print:h-auto print:max-w-none"
                 style={{ maxWidth: '400px', height: 'auto' }}
               >
                 {/* Nut label - positioned above the fretboard */}
                 <text
-                  x={40 + (toInchesForSVG(neckWidth) * 20) / 2}
-                  y="20"
+                  x={getSVGDimensions().paddingX + toInchesForSVG(neckWidth) / 2}
+                  y={getSVGDimensions().paddingY - 0.1}
                   textAnchor="middle"
                   className="fill-black font-bold"
-                  fontSize="12"
+                  fontSize="0.15"
                 >
                   NUT
                 </text>
 
                 {/* Neck outline - now vertical with top offset */}
                 <line
-                  x1="40"
-                  y1="30"
-                  x2="40"
-                  y2={toInchesForSVG(scaleLength) * 20 + 30}
+                  x1={getSVGDimensions().paddingX}
+                  y1={getSVGDimensions().paddingY}
+                  x2={getSVGDimensions().paddingX}
+                  y2={getSVGDimensions().paddingY + toInchesForSVG(scaleLength)}
                   stroke="black"
-                  strokeWidth="2"
+                  strokeWidth="0.03"
                 />
                 <line
-                  x1={toInchesForSVG(neckWidth) * 20 + 40}
-                  y1="30"
-                  x2={toInchesForSVG(neckWidth) * 20 + 40}
-                  y2={toInchesForSVG(scaleLength) * 20 + 30}
+                  x1={getSVGDimensions().paddingX + toInchesForSVG(neckWidth)}
+                  y1={getSVGDimensions().paddingY}
+                  x2={getSVGDimensions().paddingX + toInchesForSVG(neckWidth)}
+                  y2={getSVGDimensions().paddingY + toInchesForSVG(scaleLength)}
                   stroke="black"
-                  strokeWidth="2"
+                  strokeWidth="0.03"
                 />
 
                 {/* Nut - now horizontal at top with offset */}
                 <line
-                  x1="40"
-                  y1="30"
-                  x2={toInchesForSVG(neckWidth) * 20 + 40}
-                  y2="30"
+                  x1={getSVGDimensions().paddingX}
+                  y1={getSVGDimensions().paddingY}
+                  x2={getSVGDimensions().paddingX + toInchesForSVG(neckWidth)}
+                  y2={getSVGDimensions().paddingY}
                   stroke="black"
-                  strokeWidth="3"
+                  strokeWidth="0.05"
                 />
 
                 {/* Frets - now horizontal lines with offset */}
                 {fretPositions.map((fret) => (
                   <g key={fret.fret}>
                     <line
-                      x1="40"
-                      y1={toInchesForSVG(fret.distance) * 20 + 30}
-                      x2={toInchesForSVG(neckWidth) * 20 + 40}
-                      y2={toInchesForSVG(fret.distance) * 20 + 30}
+                      x1={getSVGDimensions().paddingX}
+                      y1={getSVGDimensions().paddingY + toInchesForSVG(fret.distance)}
+                      x2={getSVGDimensions().paddingX + toInchesForSVG(neckWidth)}
+                      y2={getSVGDimensions().paddingY + toInchesForSVG(fret.distance)}
                       stroke={fret.fret === 12 ? "red" : "gray"}
-                      strokeWidth={fret.fret === 12 ? "2" : "1"}
+                      strokeWidth={fret.fret === 12 ? "0.03" : "0.015"}
                     />
                     {/* White background for fret numbers - left side */}
                     <rect
-                      x="4"
-                      y={toInchesForSVG(fret.distance) * 20 + 30 - 5}
-                      width="28"
-                      height="10"
+                      x={getSVGDimensions().paddingX - 0.8}
+                      y={getSVGDimensions().paddingY + toInchesForSVG(fret.distance) - 0.08}
+                      width="0.7"
+                      height="0.16"
                       fill="white"
                       stroke="none"
                       opacity="0.9"
                     />
                     <text
-                      x="18"
-                      y={toInchesForSVG(fret.distance) * 20 + 30 + 4}
+                      x={getSVGDimensions().paddingX - 0.45}
+                      y={getSVGDimensions().paddingY + toInchesForSVG(fret.distance) + 0.05}
                       textAnchor="middle"
                       className="fill-black font-bold"
-                      fontSize="8"
+                      fontSize="0.12"
                       stroke="white"
-                      strokeWidth="0.5"
+                      strokeWidth="0.01"
                     >
                       {fret.fret}
                     </text>
                     {/* White background for measurements - right side */}
                     <rect
-                      x={toInchesForSVG(neckWidth) * 20 + 48}
-                      y={toInchesForSVG(fret.distance) * 20 + 30 - 4}
-                      width="28"
-                      height="8"
+                      x={getSVGDimensions().paddingX + toInchesForSVG(neckWidth) + 0.1}
+                      y={getSVGDimensions().paddingY + toInchesForSVG(fret.distance) - 0.06}
+                      width="0.7"
+                      height="0.12"
                       fill="white"
                       stroke="none"
                       opacity="0.9"
                     />
                     <text
-                      x={toInchesForSVG(neckWidth) * 20 + 62}
-                      y={toInchesForSVG(fret.distance) * 20 + 30 + 4}
+                      x={getSVGDimensions().paddingX + toInchesForSVG(neckWidth) + 0.45}
+                      y={getSVGDimensions().paddingY + toInchesForSVG(fret.distance) + 0.04}
                       textAnchor="middle"
                       className="fill-black font-bold"
-                      fontSize="5"
+                      fontSize="0.08"
                       stroke="white"
-                      strokeWidth="0.3"
+                      strokeWidth="0.005"
                     >
                       {convertUnits(fret.distance)}
                     </text>
@@ -485,54 +499,54 @@ const FretTemplateCalculator = () => {
 
                 {/* Bridge - now horizontal at bottom with offset */}
                 <line
-                  x1="40"
-                  y1={toInchesForSVG(scaleLength) * 20 + 30}
-                  x2={toInchesForSVG(neckWidth) * 20 + 40}
-                  y2={toInchesForSVG(scaleLength) * 20 + 30}
+                  x1={getSVGDimensions().paddingX}
+                  y1={getSVGDimensions().paddingY + toInchesForSVG(scaleLength)}
+                  x2={getSVGDimensions().paddingX + toInchesForSVG(neckWidth)}
+                  y2={getSVGDimensions().paddingY + toInchesForSVG(scaleLength)}
                   stroke="black"
-                  strokeWidth="3"
+                  strokeWidth="0.05"
                 />
 
                 {/* Bridge label */}
                 <text
-                  x={40 + (toInchesForSVG(neckWidth) * 20) / 2}
-                  y={toInchesForSVG(scaleLength) * 20 + 30 + 20}
+                  x={getSVGDimensions().paddingX + toInchesForSVG(neckWidth) / 2}
+                  y={getSVGDimensions().paddingY + toInchesForSVG(scaleLength) + 0.3}
                   textAnchor="middle"
                   className="fill-black font-bold"
-                  fontSize="12"
+                  fontSize="0.15"
                 >
                   BRIDGE
                 </text>
 
                 {/* Centerline with offset */}
                 <line
-                  x1={40 + (toInchesForSVG(neckWidth) * 20) / 2}
-                  y1="30"
-                  x2={40 + (toInchesForSVG(neckWidth) * 20) / 2}
-                  y2={toInchesForSVG(scaleLength) * 20 + 30}
+                  x1={getSVGDimensions().paddingX + toInchesForSVG(neckWidth) / 2}
+                  y1={getSVGDimensions().paddingY}
+                  x2={getSVGDimensions().paddingX + toInchesForSVG(neckWidth) / 2}
+                  y2={getSVGDimensions().paddingY + toInchesForSVG(scaleLength)}
                   stroke="green"
-                  strokeWidth="0.5"
-                  strokeDasharray="5,5"
+                  strokeWidth="0.01"
+                  strokeDasharray="0.1,0.1"
                 />
 
                 {/* String spacing indicators - now vertical with offset */}
                 <line
-                  x1={40 + (toInchesForSVG(neckWidth) * 20 - toInchesForSVG(nutStringWidth) * 20) / 2}
-                  y1="30"
-                  x2={40 + (toInchesForSVG(neckWidth) * 20 - toInchesForSVG(bridgeStringWidth) * 20) / 2}
-                  y2={toInchesForSVG(scaleLength) * 20 + 30}
+                  x1={getSVGDimensions().paddingX + (toInchesForSVG(neckWidth) - toInchesForSVG(nutStringWidth)) / 2}
+                  y1={getSVGDimensions().paddingY}
+                  x2={getSVGDimensions().paddingX + (toInchesForSVG(neckWidth) - toInchesForSVG(bridgeStringWidth)) / 2}
+                  y2={getSVGDimensions().paddingY + toInchesForSVG(scaleLength)}
                   stroke="blue"
-                  strokeWidth="0.5"
-                  strokeDasharray="2,2"
+                  strokeWidth="0.01"
+                  strokeDasharray="0.05,0.05"
                 />
                 <line
-                  x1={40 + (toInchesForSVG(neckWidth) * 20 + toInchesForSVG(nutStringWidth) * 20) / 2}
-                  y1="30"
-                  x2={40 + (toInchesForSVG(neckWidth) * 20 + toInchesForSVG(bridgeStringWidth) * 20) / 2}
-                  y2={toInchesForSVG(scaleLength) * 20 + 30}
+                  x1={getSVGDimensions().paddingX + (toInchesForSVG(neckWidth) + toInchesForSVG(nutStringWidth)) / 2}
+                  y1={getSVGDimensions().paddingY}
+                  x2={getSVGDimensions().paddingX + (toInchesForSVG(neckWidth) + toInchesForSVG(bridgeStringWidth)) / 2}
+                  y2={getSVGDimensions().paddingY + toInchesForSVG(scaleLength)}
                   stroke="blue"
-                  strokeWidth="0.5"
-                  strokeDasharray="2,2"
+                  strokeWidth="0.01"
+                  strokeDasharray="0.05,0.05"
                 />
               </svg>
 
