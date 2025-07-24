@@ -7,7 +7,8 @@ describe('Preset Selection', () => {
     render(<App />);
 
     // Find the preset dropdown (it's the only combobox on the page)
-    const presetSelect = screen.getByRole('combobox');
+    const comboboxes = screen.getAllByRole('combobox');
+    const presetSelect = comboboxes[0]; // First combobox is the instrument preset
 
     // Initially should show "fenderStandard" since that matches the default values
     expect(presetSelect).toHaveValue('fenderStandard');
@@ -23,7 +24,8 @@ describe('Preset Selection', () => {
     render(<App />);
 
     // Find the preset dropdown and scale length input (first spinbutton)
-    const presetSelect = screen.getByRole('combobox');
+    const comboboxes = screen.getAllByRole('combobox');
+    const presetSelect = comboboxes[0]; // First combobox is the instrument preset
     const inputs = screen.getAllByRole('spinbutton');
     const scaleLengthInput = inputs[0]; // First input is scale length
 
@@ -40,7 +42,8 @@ describe('Preset Selection', () => {
   it('should reset to empty when empty option is selected', () => {
     render(<App />);
 
-    const presetSelect = screen.getByRole('combobox');
+    const comboboxes = screen.getAllByRole('combobox');
+    const presetSelect = comboboxes[0]; // First combobox is the instrument preset
 
     // Initially should have fenderStandard selected
     expect(presetSelect).toHaveValue('fenderStandard');

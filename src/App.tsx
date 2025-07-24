@@ -1,7 +1,9 @@
-import { useState, useMemo } from 'react';
-import { Printer, Guitar } from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
+import { Printer, Guitar, Info, Settings } from 'lucide-react';
 import presetsData from './data/presets.json';
 import type { PresetInstrument } from './types/presets';
+import { calculateBridgeRecommendations, getInstrumentType, getInstrumentSpecificTips, getGaugeSetsForInstrument, getDefaultGaugeSet, getGaugeSetById } from './utils/bridgeCompensation';
+import Tooltip from './components/Tooltip';
 
 interface FretPosition {
   fret: number;
@@ -18,6 +20,7 @@ const FretTemplateCalculator = () => {
   const [fretWireWidth, setFretWireWidth] = useState<number>(0.04);
   const [units, setUnits] = useState<'inches' | 'mm'>('inches');
   const [selectedPreset, setSelectedPreset] = useState<string>('fenderStandard');
+  const [selectedGaugeSetId, setSelectedGaugeSetId] = useState<string>('light'); // Default to light gauge
 
   // Calculate fret positions using the 12th root of 2 formula
   const fretPositions = useMemo((): FretPosition[] => {
@@ -35,6 +38,37 @@ const FretTemplateCalculator = () => {
 
     return positions;
   }, [scaleLength, numberOfFrets]);
+
+  // Determine current instrument type for gauge selection
+  const currentInstrumentType = useMemo(() => {
+    const scaleLengthInches = units === 'mm' ? scaleLength / 25.4 : scaleLength;
+    return getInstrumentType(scaleLengthInches, numberOfFrets);
+  }, [scaleLength, numberOfFrets, units]);
+
+  // Get available gauge sets for current instrument
+  const availableGaugeSets = useMemo(() => {
+    return getGaugeSetsForInstrument(currentInstrumentType);
+  }, [currentInstrumentType]);
+
+  // Get currently selected gauge set
+  const selectedGaugeSet = useMemo(() => {
+    return getGaugeSetById(currentInstrumentType, selectedGaugeSetId) || getDefaultGaugeSet(currentInstrumentType);
+  }, [currentInstrumentType, selectedGaugeSetId]);
+
+  // Calculate bridge compensation recommendations with selected gauges
+  const bridgeRecommendations = useMemo(() => {
+    return calculateBridgeRecommendations(scaleLength, numberOfFrets, units, selectedGaugeSet.gauges);
+  }, [scaleLength, numberOfFrets, units, selectedGaugeSet]);
+
+  // Ensure selected gauge set is valid for current instrument type
+  useEffect(() => {
+    const currentGaugeSet = getGaugeSetById(currentInstrumentType, selectedGaugeSetId);
+    if (!currentGaugeSet) {
+      // If current selection is invalid for this instrument type, reset to default
+      const defaultGaugeSet = getDefaultGaugeSet(currentInstrumentType);
+      setSelectedGaugeSetId(defaultGaugeSet.id);
+    }
+  }, [currentInstrumentType, selectedGaugeSetId]);
 
   // Convert units when switching
   const convertValue = (value: number, fromUnit: string, toUnit: string): number => {
@@ -101,6 +135,12 @@ const FretTemplateCalculator = () => {
       setBridgeStringWidth(config.bridgeWidth);
       setNumberOfFrets(config.frets);
       setSelectedPreset(preset);
+
+      // Reset gauge selection to default for the new instrument type
+      const scaleLengthInches = units === 'mm' ? config.scaleLength / 25.4 : config.scaleLength;
+      const instrumentType = getInstrumentType(scaleLengthInches, config.frets);
+      const defaultGaugeSet = getDefaultGaugeSet(instrumentType);
+      setSelectedGaugeSetId(defaultGaugeSet.id);
     }
   };
 
@@ -211,6 +251,29 @@ const FretTemplateCalculator = () => {
                   <option value="ukuleleContrabass">{presetInstruments.ukuleleContrabass?.name} ({presetInstruments.ukuleleContrabass?.displayLength})</option>
                 </optgroup>
               </select>
+            </div>
+
+            {/* String Gauge Selection */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                String Gauge Set
+                <Tooltip content="Select the string gauge set that matches your instrument. Different gauges require different amounts of bridge compensation for optimal intonation." />
+              </label>
+              <select
+                className="w-full p-2 border border-gray-300 rounded-md"
+                value={selectedGaugeSetId}
+                onChange={(e) => setSelectedGaugeSetId(e.target.value)}
+              >
+                {availableGaugeSets.map((gaugeSet) => (
+                  <option key={gaugeSet.id} value={gaugeSet.id}>
+                    {gaugeSet.description}
+                  </option>
+                ))}
+              </select>
+              <p className="text-xs text-gray-500 mt-1">
+                Current: {selectedGaugeSet.gauges.map(g => (g * 1000).toFixed(0)).join('-')}
+                {units === 'mm' ? ' (thousandths of inch)' : ' (thousandths)'}
+              </p>
             </div>
 
             {/* Units */}
@@ -391,6 +454,127 @@ const FretTemplateCalculator = () => {
             </div>
           </div>
 
+          {/* Bridge Compensation Recommendations */}
+          <div className="mb-8 print:mb-4">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <Settings className="w-5 h-5" />
+              Bridge Compensation Recommendations
+              <Tooltip content="Bridge compensation adjusts individual string lengths to achieve perfect intonation. Different strings require different amounts of compensation based on their gauge, tension, and construction." />
+            </h2>
+
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+              <div className="flex items-start gap-2">
+                <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold text-blue-900 mb-2">Why Bridge Compensation Matters</h3>
+                  <p className="text-blue-800 text-sm mb-3">
+                    When you press a string down at a fret, you slightly increase its tension and effective length.
+                    Thicker strings and wound strings stretch more, requiring the bridge saddle to be moved back
+                    to maintain perfect intonation across all frets.
+                  </p>
+                  <p className="text-blue-800 text-sm mb-2">
+                    {bridgeRecommendations.explanation}
+                  </p>
+                  <div className="bg-blue-100 rounded p-3 mt-3">
+                    <p className="text-blue-800 text-sm font-medium">
+                      🎸 Selected gauge set: <span className="font-mono">{selectedGaugeSet.description}</span>
+                    </p>
+                    <p className="text-blue-800 text-sm font-medium mt-1">
+                      📍 Recommended bridge center position: <span className="font-mono">{convertUnits(bridgeRecommendations.overallPosition)}{units}</span> from nut
+                    </p>
+                    <p className="text-blue-700 text-xs mt-1">
+                      This is your starting point - individual saddles will be adjusted from here.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* String-by-string compensation table */}
+            <div className="overflow-x-auto mb-4">
+              <table className="w-full border-collapse border border-gray-300 text-sm">
+                <thead>
+                  <tr className="bg-gray-50">
+                    <th className="border border-gray-300 px-3 py-2 text-left">String</th>
+                    <th className="border border-gray-300 px-3 py-2 text-left">
+                      Gauge
+                    </th>
+                    <th className="border border-gray-300 px-3 py-2 text-left">
+                      <div className="flex items-center gap-1">
+                        Compensation ({units})
+                        <Tooltip content="Amount to move the bridge saddle back from the theoretical scale length position. Positive values mean moving the saddle away from the nut." />
+                      </div>
+                    </th>
+                    <th className="border border-gray-300 px-3 py-2 text-left">
+                      <div className="flex items-center gap-1">
+                        Saddle Position ({units})
+                        <Tooltip content="Final position of each string's bridge saddle, measured from the nut. This includes the scale length plus compensation." />
+                      </div>
+                    </th>
+                    <th className="border border-gray-300 px-3 py-2 text-left print:hidden">
+                      Notes
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bridgeRecommendations.compensations.map((comp, index) => (
+                    <tr key={comp.stringNumber}>
+                      <td className="border border-gray-300 px-3 py-2 font-medium">
+                        String {comp.stringNumber}
+                      </td>
+                      <td className="border border-gray-300 px-3 py-2 font-mono text-sm">
+                        .{(selectedGaugeSet.gauges[index] * 1000).toFixed(0).padStart(3, '0')}"
+                      </td>
+                      <td className="border border-gray-300 px-3 py-2 font-mono">
+                        +{convertUnits(comp.compensation)}
+                      </td>
+                      <td className="border border-gray-300 px-3 py-2 font-mono">
+                        {convertUnits(scaleLength + comp.compensation)}
+                      </td>
+                      <td className="border border-gray-300 px-3 py-2 text-xs text-gray-600 print:hidden">
+                        {comp.reason}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Setup tips */}
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+              <h3 className="font-semibold text-yellow-900 mb-2">Setup Tips</h3>
+              <ul className="text-yellow-800 text-sm space-y-1">
+                {bridgeRecommendations.tips.map((tip, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <span className="text-yellow-600 mt-1">•</span>
+                    <span>{tip}</span>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Instrument-specific tips */}
+              {(() => {
+                const instrumentType = getInstrumentType(units === 'mm' ? scaleLength / 25.4 : scaleLength, numberOfFrets);
+                const specificTips = getInstrumentSpecificTips(instrumentType);
+                return specificTips.length > 0 ? (
+                  <div className="mt-3 pt-3 border-t border-yellow-300">
+                    <h4 className="font-medium text-yellow-900 mb-1">
+                      {instrumentType.charAt(0).toUpperCase() + instrumentType.slice(1).replace(/([A-Z])/g, ' $1')} Specific:
+                    </h4>
+                    <ul className="text-yellow-800 text-sm space-y-1">
+                      {specificTips.map((tip, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <span className="text-yellow-600 mt-1">•</span>
+                          <span>{tip}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null;
+              })()}
+            </div>
+          </div>
+
           {/* Visual Template */}
           <div className="print:page-break-before">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Template Layout</h2>
@@ -557,6 +741,100 @@ const FretTemplateCalculator = () => {
                   strokeWidth="0.01"
                   strokeDasharray="0.05,0.05"
                 />
+
+                {/* Bridge Compensation Zone */}
+                {(() => {
+                  const minCompensation = toInchesForSVG(bridgeRecommendations.compensationRange.min);
+                  const maxCompensation = toInchesForSVG(bridgeRecommendations.compensationRange.max);
+                  const bridgeY = getSVGDimensions().paddingY + toInchesForSVG(scaleLength);
+
+                  return (
+                    <g>
+                      {/* Compensation zone rectangle */}
+                      <rect
+                        x={getSVGDimensions().paddingX}
+                        y={bridgeY}
+                        width={toInchesForSVG(neckWidth)}
+                        height={maxCompensation}
+                        fill="orange"
+                        fillOpacity="0.2"
+                        stroke="orange"
+                        strokeWidth="0.01"
+                        strokeDasharray="0.03,0.03"
+                      />
+
+                      {/* Minimum compensation line */}
+                      <line
+                        x1={getSVGDimensions().paddingX}
+                        y1={bridgeY + minCompensation}
+                        x2={getSVGDimensions().paddingX + toInchesForSVG(neckWidth)}
+                        y2={bridgeY + minCompensation}
+                        stroke="orange"
+                        strokeWidth="0.02"
+                        strokeDasharray="0.05,0.02"
+                      />
+
+                      {/* Maximum compensation line */}
+                      <line
+                        x1={getSVGDimensions().paddingX}
+                        y1={bridgeY + maxCompensation}
+                        x2={getSVGDimensions().paddingX + toInchesForSVG(neckWidth)}
+                        y2={bridgeY + maxCompensation}
+                        stroke="orange"
+                        strokeWidth="0.02"
+                        strokeDasharray="0.05,0.02"
+                      />
+
+                      {/* Compensation zone label */}
+                      <text
+                        x={getSVGDimensions().paddingX + toInchesForSVG(neckWidth) + 0.1}
+                        y={bridgeY + (minCompensation + maxCompensation) / 2}
+                        textAnchor="start"
+                        className="fill-orange-600 font-bold"
+                        fontSize="0.08"
+                      >
+                        Compensation Zone
+                      </text>
+
+                      {/* Individual string compensation indicators */}
+                      {bridgeRecommendations.compensations.map((comp, index) => {
+                        const stringX = getSVGDimensions().paddingX +
+                          (toInchesForSVG(neckWidth) / (bridgeRecommendations.compensations.length + 1)) * (index + 1);
+                        const compensationY = bridgeY + toInchesForSVG(comp.compensation);
+
+                        return (
+                          <g key={comp.stringNumber}>
+                            {/* String compensation line */}
+                            <line
+                              x1={stringX}
+                              y1={bridgeY}
+                              x2={stringX}
+                              y2={compensationY}
+                              stroke="red"
+                              strokeWidth="0.015"
+                            />
+                            {/* String number label */}
+                            <circle
+                              cx={stringX}
+                              cy={compensationY}
+                              r="0.03"
+                              fill="red"
+                            />
+                            <text
+                              x={stringX}
+                              y={compensationY + 0.01}
+                              textAnchor="middle"
+                              className="fill-white font-bold"
+                              fontSize="0.06"
+                            >
+                              {comp.stringNumber}
+                            </text>
+                          </g>
+                        );
+                      })}
+                    </g>
+                  );
+                })()}
               </svg>
 
               {/* Legend */}
@@ -576,6 +854,14 @@ const FretTemplateCalculator = () => {
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-0.5 bg-blue-500 border-dashed border-t"></div>
                   <span>String spacing guides</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-2 bg-orange-200 border border-orange-400 border-dashed"></div>
+                  <span>Bridge compensation zone</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                  <span>Individual string compensation points</span>
                 </div>
               </div>
             </div>

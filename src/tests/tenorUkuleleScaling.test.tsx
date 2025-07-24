@@ -7,7 +7,8 @@ describe('Tenor Ukulele Scaling Fix', () => {
     render(<App />);
 
     // Find and select the tenor ukulele preset from dropdown
-    const presetSelect = screen.getByRole('combobox');
+    const comboboxes = screen.getAllByRole('combobox');
+    const presetSelect = comboboxes[0]; // First combobox is the instrument preset
     fireEvent.change(presetSelect, { target: { value: 'ukuleleTenor' } });
     
     // Find the template SVG
@@ -45,7 +46,8 @@ describe('Tenor Ukulele Scaling Fix', () => {
     render(<App />);
 
     // Load tenor ukulele preset
-    const presetSelect = screen.getByRole('combobox');
+    const comboboxes = screen.getAllByRole('combobox');
+    const presetSelect = comboboxes[0]; // First combobox is the instrument preset
     fireEvent.change(presetSelect, { target: { value: 'ukuleleTenor' } });
     
     // Find the first fret measurement in the table
@@ -75,7 +77,8 @@ describe('Tenor Ukulele Scaling Fix', () => {
     render(<App />);
 
     // Load tenor ukulele preset
-    const presetSelect = screen.getByRole('combobox');
+    const comboboxes = screen.getAllByRole('combobox');
+    const presetSelect = comboboxes[0]; // First combobox is the instrument preset
     fireEvent.change(presetSelect, { target: { value: 'ukuleleTenor' } });
     
     // Check initial SVG dimensions (should be in inches)
