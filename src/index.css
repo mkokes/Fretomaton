@@ -3,12 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-  * {
-    border-color: rgb(229 231 235);
-  }
-
   body {
-    @apply bg-white text-gray-900;
     margin: 0;
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
@@ -18,11 +13,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
-    line-height: 1.2;
   }
 
   /* Print-specific styles for accurate SVG scaling */

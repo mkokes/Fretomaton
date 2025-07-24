@@ -183,37 +183,47 @@ const FretTemplateCalculator = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-white">
+    <div className="max-w-6xl mx-auto p-6 bg-base-100 min-h-screen">
       <div className="mb-8 print:hidden">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
-          <Guitar className="w-8 h-8" />
-          Fretomaton
-        </h1>
-        <p className="text-gray-600">Generate precise fret layout templates for guitar, ukulele, and other fretted instruments</p>
+        <div className="hero bg-base-200 rounded-box p-6 mb-6">
+          <div className="hero-content text-center">
+            <div className="max-w-md">
+              <h1 className="text-4xl font-bold text-primary flex items-center justify-center gap-3 mb-4">
+                <Guitar className="w-10 h-10" />
+                Fretomaton
+              </h1>
+              <p className="text-base-content/70">Generate precise fret layout templates for guitar, ukulele, and other fretted instruments</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Controls */}
         <div className="lg:col-span-1 print:hidden">
-          <div className="bg-gray-50 p-6 rounded-lg space-y-6">
-            <h2 className="text-xl font-semibold text-gray-800">Settings</h2>
+          <div className="card bg-base-200 shadow-xl">
+            <div className="card-body">
+              <h2 className="card-title text-primary">
+                <Settings className="w-5 h-5" />
+                Settings
+              </h2>
 
-            {/* Presets */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Instrument Presets
-              </label>
-              <select
-                className="w-full p-2 border border-gray-300 rounded-md"
-                onChange={(e) => {
-                  if (e.target.value) {
-                    loadPreset(e.target.value);
-                  } else {
-                    setSelectedPreset('');
-                  }
-                }}
-                value={selectedPreset}
-              >
+              {/* Presets */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-medium">Instrument Presets</span>
+                </label>
+                <select
+                  className="select select-bordered w-full"
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      loadPreset(e.target.value);
+                    } else {
+                      setSelectedPreset('');
+                    }
+                  }}
+                  value={selectedPreset}
+                >
                 <option value="">Select a preset...</option>
 
                 <optgroup label="Electric Guitars">
@@ -253,17 +263,19 @@ const FretTemplateCalculator = () => {
               </select>
             </div>
 
-            {/* String Gauge Selection */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                String Gauge Set
-                <Tooltip content="Select the string gauge set that matches your instrument. Different gauges require different amounts of bridge compensation for optimal intonation." />
-              </label>
-              <select
-                className="w-full p-2 border border-gray-300 rounded-md"
-                value={selectedGaugeSetId}
-                onChange={(e) => setSelectedGaugeSetId(e.target.value)}
-              >
+              {/* String Gauge Selection */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-medium">
+                    String Gauge Set
+                    <Tooltip content="Select the string gauge set that matches your instrument. Different gauges require different amounts of bridge compensation for optimal intonation." />
+                  </span>
+                </label>
+                <select
+                  className="select select-bordered w-full"
+                  value={selectedGaugeSetId}
+                  onChange={(e) => setSelectedGaugeSetId(e.target.value)}
+                >
                 {availableGaugeSets.map((gaugeSet) => (
                   <option key={gaugeSet.id} value={gaugeSet.id}>
                     {gaugeSet.description}
@@ -276,129 +288,136 @@ const FretTemplateCalculator = () => {
               </p>
             </div>
 
-            {/* Units */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Units
-              </label>
-              <div className="flex gap-4">
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    value="inches"
-                    checked={units === 'inches'}
-                    onChange={(e) => handleUnitsChange(e.target.value as 'inches' | 'mm')}
-                    className="mr-2"
-                  />
-                  Inches
+              {/* Units */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-medium">Units</span>
                 </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    value="mm"
-                    checked={units === 'mm'}
-                    onChange={(e) => handleUnitsChange(e.target.value as 'inches' | 'mm')}
-                    className="mr-2"
-                  />
-                  Millimeters
+                <div className="flex gap-4">
+                  <label className="label cursor-pointer">
+                    <input
+                      type="radio"
+                      value="inches"
+                      checked={units === 'inches'}
+                      onChange={(e) => handleUnitsChange(e.target.value as 'inches' | 'mm')}
+                      className="radio radio-primary"
+                    />
+                    <span className="label-text ml-2">Inches</span>
+                  </label>
+                  <label className="label cursor-pointer">
+                    <input
+                      type="radio"
+                      value="mm"
+                      checked={units === 'mm'}
+                      onChange={(e) => handleUnitsChange(e.target.value as 'inches' | 'mm')}
+                      className="radio radio-primary"
+                    />
+                    <span className="label-text ml-2">Millimeters</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Scale Length */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-medium">Scale Length ({units})</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.001"
+                  value={scaleLength}
+                  onChange={(e) => setScaleLength(parseFloat(e.target.value) || 0)}
+                  className="input input-bordered w-full"
+                />
+                <label className="label">
+                  <span className="label-text-alt">Distance from nut to bridge</span>
                 </label>
               </div>
-            </div>
 
-            {/* Scale Length */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Scale Length ({units})
-              </label>
-              <input
-                type="number"
-                step="0.001"
-                value={scaleLength}
-                onChange={(e) => setScaleLength(parseFloat(e.target.value) || 0)}
-                className="w-full p-2 border border-gray-300 rounded-md"
-              />
-              <p className="text-xs text-gray-500 mt-1">Distance from nut to bridge</p>
-            </div>
+              {/* String Widths */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-medium">String Width at Nut ({units})</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.001"
+                  value={nutStringWidth}
+                  onChange={(e) => setNutStringWidth(parseFloat(e.target.value) || 0)}
+                  className="input input-bordered w-full"
+                />
+              </div>
 
-            {/* String Widths */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                String Width at Nut ({units})
-              </label>
-              <input
-                type="number"
-                step="0.001"
-                value={nutStringWidth}
-                onChange={(e) => setNutStringWidth(parseFloat(e.target.value) || 0)}
-                className="w-full p-2 border border-gray-300 rounded-md"
-              />
-            </div>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-medium">String Width at Bridge ({units})</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.001"
+                  value={bridgeStringWidth}
+                  onChange={(e) => setBridgeStringWidth(parseFloat(e.target.value) || 0)}
+                  className="input input-bordered w-full"
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                String Width at Bridge ({units})
-              </label>
-              <input
-                type="number"
-                step="0.001"
-                value={bridgeStringWidth}
-                onChange={(e) => setBridgeStringWidth(parseFloat(e.target.value) || 0)}
-                className="w-full p-2 border border-gray-300 rounded-md"
-              />
-            </div>
+              {/* Additional Parameters */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-medium">Number of Frets</span>
+                </label>
+                <input
+                  type="number"
+                  min="12"
+                  max="36"
+                  value={numberOfFrets}
+                  onChange={(e) => setNumberOfFrets(parseInt(e.target.value) || 12)}
+                  className="input input-bordered w-full"
+                />
+              </div>
 
-            {/* Additional Parameters */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Number of Frets
-              </label>
-              <input
-                type="number"
-                min="12"
-                max="36"
-                value={numberOfFrets}
-                onChange={(e) => setNumberOfFrets(parseInt(e.target.value) || 12)}
-                className="w-full p-2 border border-gray-300 rounded-md"
-              />
-            </div>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-medium">Neck Width ({units})</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.001"
+                  value={neckWidth}
+                  onChange={(e) => setNeckWidth(parseFloat(e.target.value) || 0)}
+                  className="input input-bordered w-full"
+                />
+                <label className="label">
+                  <span className="label-text-alt">Total width of neck</span>
+                </label>
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Neck Width ({units})
-              </label>
-              <input
-                type="number"
-                step="0.001"
-                value={neckWidth}
-                onChange={(e) => setNeckWidth(parseFloat(e.target.value) || 0)}
-                className="w-full p-2 border border-gray-300 rounded-md"
-              />
-              <p className="text-xs text-gray-500 mt-1">Total width of neck</p>
-            </div>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-medium">Fret Wire Width ({units})</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.001"
+                  value={fretWireWidth}
+                  onChange={(e) => setFretWireWidth(parseFloat(e.target.value) || 0)}
+                  className="input input-bordered w-full"
+                />
+                <label className="label">
+                  <span className="label-text-alt">Thickness of fret wire for slot cutting</span>
+                </label>
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Fret Wire Width ({units})
-              </label>
-              <input
-                type="number"
-                step="0.001"
-                value={fretWireWidth}
-                onChange={(e) => setFretWireWidth(parseFloat(e.target.value) || 0)}
-                className="w-full p-2 border border-gray-300 rounded-md"
-              />
-              <p className="text-xs text-gray-500 mt-1">Thickness of fret wire for slot cutting</p>
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-2">
-              <button
-                onClick={handlePrint}
-                className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center justify-center gap-2"
-              >
-                <Printer className="w-4 h-4" />
-                Print
-              </button>
+              {/* Actions */}
+              <div className="card-actions justify-end">
+                <button
+                  onClick={handlePrint}
+                  className="btn btn-primary btn-block"
+                >
+                  <Printer className="w-4 h-4" />
+                  Print Template
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -406,143 +425,125 @@ const FretTemplateCalculator = () => {
         {/* Results and Template */}
         <div className="lg:col-span-2">
           {/* Calculations Table */}
-          <div className="mb-8 print:mb-4">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Fret Positions</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse border border-gray-300 text-sm">
-                <thead>
-                  <tr className="bg-gray-50">
-                    <th className="border border-gray-300 px-3 py-2 text-left">Fret</th>
-                    <th className="border border-gray-300 px-3 py-2 text-left">
-                      Distance from Nut ({units})
-                    </th>
-                    <th className="border border-gray-300 px-3 py-2 text-left">
-                      String Spacing ({units})
-                    </th>
-                    <th className="border border-gray-300 px-3 py-2 text-left print:hidden">
-                      From Previous ({units})
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="border border-gray-300 px-3 py-2 font-medium">0 (Nut)</td>
-                    <td className="border border-gray-300 px-3 py-2">0.0000</td>
-                    <td className="border border-gray-300 px-3 py-2">{convertUnits(nutStringWidth)}</td>
-                    <td className="border border-gray-300 px-3 py-2 print:hidden">-</td>
-                  </tr>
-                  {fretPositions.map((fret) => (
-                    <tr key={fret.fret} className={fret.fret === 12 ? 'bg-yellow-50' : ''}>
-                      <td className="border border-gray-300 px-3 py-2 font-medium">{fret.fret}</td>
-                      <td className="border border-gray-300 px-3 py-2">{convertUnits(fret.distance)}</td>
-                      <td className="border border-gray-300 px-3 py-2">
-                        {convertUnits(getStringSpacingAtFret(fret.fret))}
-                      </td>
-                      <td className="border border-gray-300 px-3 py-2 print:hidden">
-                        {convertUnits(fret.fromPrevious)}
-                      </td>
+          <div className="card bg-base-100 shadow-xl mb-8 print:mb-4">
+            <div className="card-body">
+              <h2 className="card-title text-primary mb-4">Fret Positions</h2>
+              <div className="overflow-x-auto">
+                <table className="table table-zebra table-sm">
+                  <thead>
+                    <tr>
+                      <th>Fret</th>
+                      <th>Distance from Nut ({units})</th>
+                      <th>String Spacing ({units})</th>
+                      <th className="print:hidden">From Previous ({units})</th>
                     </tr>
-                  ))}
-                  <tr className="bg-gray-50">
-                    <td className="border border-gray-300 px-3 py-2 font-medium">Bridge</td>
-                    <td className="border border-gray-300 px-3 py-2">{convertUnits(scaleLength)}</td>
-                    <td className="border border-gray-300 px-3 py-2">{convertUnits(bridgeStringWidth)}</td>
-                    <td className="border border-gray-300 px-3 py-2 print:hidden">-</td>
-                  </tr>
-                </tbody>
-              </table>
+                  </thead>
+                <tbody>
+                    <tr>
+                      <td className="font-medium">0 (Nut)</td>
+                      <td>0.0000</td>
+                      <td>{convertUnits(nutStringWidth)}</td>
+                      <td className="print:hidden">-</td>
+                    </tr>
+                    {fretPositions.map((fret) => (
+                      <tr key={fret.fret} className={fret.fret === 12 ? 'bg-warning/20' : ''}>
+                        <td className="font-medium">{fret.fret}</td>
+                        <td>{convertUnits(fret.distance)}</td>
+                        <td>{convertUnits(getStringSpacingAtFret(fret.fret))}</td>
+                        <td className="print:hidden">{convertUnits(fret.fromPrevious)}</td>
+                      </tr>
+                    ))}
+                    <tr className="bg-base-200">
+                      <td className="font-medium">Bridge</td>
+                      <td>{convertUnits(scaleLength)}</td>
+                      <td>{convertUnits(bridgeStringWidth)}</td>
+                      <td className="print:hidden">-</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
 
           {/* Bridge Compensation Recommendations */}
-          <div className="mb-8 print:mb-4">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-              <Settings className="w-5 h-5" />
-              Bridge Compensation Recommendations
-              <Tooltip content="Bridge compensation adjusts individual string lengths to achieve perfect intonation. Different strings require different amounts of compensation based on their gauge, tension, and construction." />
-            </h2>
+          <div className="card bg-base-100 shadow-xl mb-8 print:mb-4">
+            <div className="card-body">
+              <h2 className="card-title text-primary mb-4 flex items-center gap-2">
+                <Settings className="w-5 h-5" />
+                Bridge Compensation Recommendations
+                <Tooltip content="Bridge compensation adjusts individual string lengths to achieve perfect intonation. Different strings require different amounts of compensation based on their gauge, tension, and construction." />
+              </h2>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-              <div className="flex items-start gap-2">
-                <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold text-blue-900 mb-2">Why Bridge Compensation Matters</h3>
-                  <p className="text-blue-800 text-sm mb-3">
-                    When you press a string down at a fret, you slightly increase its tension and effective length.
-                    Thicker strings and wound strings stretch more, requiring the bridge saddle to be moved back
-                    to maintain perfect intonation across all frets.
-                  </p>
-                  <p className="text-blue-800 text-sm mb-2">
-                    {bridgeRecommendations.explanation}
-                  </p>
-                  <div className="bg-blue-100 rounded p-3 mt-3">
-                    <p className="text-blue-800 text-sm font-medium">
-                      🎸 Selected gauge set: <span className="font-mono">{selectedGaugeSet.description}</span>
+              <div className="alert alert-info mb-4">
+                <div className="flex items-start gap-2">
+                  <Info className="w-5 h-5 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-semibold mb-2">Why Bridge Compensation Matters</h3>
+                    <p className="text-sm mb-3">
+                      When you press a string down at a fret, you slightly increase its tension and effective length.
+                      Thicker strings and wound strings stretch more, requiring the bridge saddle to be moved back
+                      to maintain perfect intonation across all frets.
                     </p>
-                    <p className="text-blue-800 text-sm font-medium mt-1">
-                      📍 Recommended bridge center position: <span className="font-mono">{convertUnits(bridgeRecommendations.overallPosition)}{units}</span> from nut
+                    <p className="text-sm mb-2">
+                      {bridgeRecommendations.explanation}
                     </p>
-                    <p className="text-blue-700 text-xs mt-1">
-                      This is your starting point - individual saddles will be adjusted from here.
-                    </p>
+                    <div className="bg-info-content/10 rounded p-3 mt-3">
+                      <p className="text-sm font-medium">
+                        🎸 Selected gauge set: <span className="font-mono">{selectedGaugeSet.description}</span>
+                      </p>
+                      <p className="text-sm font-medium mt-1">
+                        📍 Recommended bridge center position: <span className="font-mono">{convertUnits(bridgeRecommendations.overallPosition)}{units}</span> from nut
+                      </p>
+                      <p className="text-xs mt-1 opacity-70">
+                        This is your starting point - individual saddles will be adjusted from here.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* String-by-string compensation table */}
-            <div className="overflow-x-auto mb-4">
-              <table className="w-full border-collapse border border-gray-300 text-sm">
-                <thead>
-                  <tr className="bg-gray-50">
-                    <th className="border border-gray-300 px-3 py-2 text-left">String</th>
-                    <th className="border border-gray-300 px-3 py-2 text-left">
-                      Gauge
-                    </th>
-                    <th className="border border-gray-300 px-3 py-2 text-left">
-                      <div className="flex items-center gap-1">
-                        Compensation ({units})
-                        <Tooltip content="Amount to move the bridge saddle back from the theoretical scale length position. Positive values mean moving the saddle away from the nut." />
-                      </div>
-                    </th>
-                    <th className="border border-gray-300 px-3 py-2 text-left">
-                      <div className="flex items-center gap-1">
-                        Saddle Position ({units})
-                        <Tooltip content="Final position of each string's bridge saddle, measured from the nut. This includes the scale length plus compensation." />
-                      </div>
-                    </th>
-                    <th className="border border-gray-300 px-3 py-2 text-left print:hidden">
-                      Notes
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {bridgeRecommendations.compensations.map((comp, index) => (
-                    <tr key={comp.stringNumber}>
-                      <td className="border border-gray-300 px-3 py-2 font-medium">
-                        String {comp.stringNumber}
-                      </td>
-                      <td className="border border-gray-300 px-3 py-2 font-mono text-sm">
-                        .{(selectedGaugeSet.gauges[index] * 1000).toFixed(0).padStart(3, '0')}"
-                      </td>
-                      <td className="border border-gray-300 px-3 py-2 font-mono">
-                        +{convertUnits(comp.compensation)}
-                      </td>
-                      <td className="border border-gray-300 px-3 py-2 font-mono">
-                        {convertUnits(scaleLength + comp.compensation)}
-                      </td>
-                      <td className="border border-gray-300 px-3 py-2 text-xs text-gray-600 print:hidden">
-                        {comp.reason}
-                      </td>
+              {/* String-by-string compensation table */}
+              <div className="overflow-x-auto mb-4">
+                <table className="table table-zebra table-sm">
+                  <thead>
+                    <tr>
+                      <th>String</th>
+                      <th>Gauge</th>
+                      <th>
+                        <div className="flex items-center gap-1">
+                          Compensation ({units})
+                          <Tooltip content="Amount to move the bridge saddle back from the theoretical scale length position. Positive values mean moving the saddle away from the nut." />
+                        </div>
+                      </th>
+                      <th>
+                        <div className="flex items-center gap-1">
+                          Saddle Position ({units})
+                          <Tooltip content="Final position of each string's bridge saddle, measured from the nut. This includes the scale length plus compensation." />
+                        </div>
+                      </th>
+                      <th className="print:hidden">Notes</th>
                     </tr>
-                  ))}
+                  </thead>
+                <tbody>
+                    {bridgeRecommendations.compensations.map((comp, index) => (
+                      <tr key={comp.stringNumber}>
+                        <td className="font-medium">String {comp.stringNumber}</td>
+                        <td className="font-mono text-sm">
+                          .{(selectedGaugeSet.gauges[index] * 1000).toFixed(0).padStart(3, '0')}"
+                        </td>
+                        <td className="font-mono">+{convertUnits(comp.compensation)}</td>
+                        <td className="font-mono">{convertUnits(scaleLength + comp.compensation)}</td>
+                        <td className="text-xs opacity-60 print:hidden">{comp.reason}</td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
 
-            {/* Setup tips */}
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <h3 className="font-semibold text-yellow-900 mb-2">Setup Tips</h3>
+              {/* Setup tips */}
+              <div className="alert alert-warning">
+                <div>
+                  <h3 className="font-semibold mb-2">Setup Tips</h3>
               <ul className="text-yellow-800 text-sm space-y-1">
                 {bridgeRecommendations.tips.map((tip, index) => (
                   <li key={index} className="flex items-start gap-2">
@@ -570,15 +571,18 @@ const FretTemplateCalculator = () => {
                       ))}
                     </ul>
                   </div>
-                ) : null;
-              })()}
+                  ) : null;
+                })()}
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Visual Template */}
-          <div className="print:page-break-before">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Template Layout</h2>
-            <div className="border border-gray-300 p-4 bg-white template-container">
+          <div className="card bg-base-100 shadow-xl print:page-break-before">
+            <div className="card-body">
+              <h2 className="card-title text-primary mb-4">Template Layout</h2>
+              <div className="template-container">
               <div className="text-xs text-gray-600 mb-2">
                 Scale: {convertUnits(scaleLength)}{units} | Nut: {convertUnits(nutStringWidth)}{units} | Bridge: {convertUnits(bridgeStringWidth)}{units} | {numberOfFrets} frets
               </div>
@@ -862,6 +866,7 @@ const FretTemplateCalculator = () => {
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                   <span>Individual string compensation points</span>
+                </div>
                 </div>
               </div>
             </div>
