@@ -394,7 +394,7 @@ const FretTemplateCalculator = () => {
           {/* Visual Template */}
           <div className="print:page-break-before">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Template Layout</h2>
-            <div className="border border-gray-300 p-4 bg-white">
+            <div className="border border-gray-300 p-4 bg-white template-container">
               <div className="text-xs text-gray-600 mb-2">
                 Scale: {convertUnits(scaleLength)}{units} | Nut: {convertUnits(nutStringWidth)}{units} | Bridge: {convertUnits(bridgeStringWidth)}{units} | {numberOfFrets} frets
               </div>
@@ -560,7 +560,7 @@ const FretTemplateCalculator = () => {
               </svg>
 
               {/* Legend */}
-              <div className="mt-4 text-xs text-gray-600 space-y-1">
+              <div className="mt-4 text-xs text-gray-600 space-y-1 template-legend">
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-0.5 bg-black"></div>
                   <span>Fret slots (cut here)</span>

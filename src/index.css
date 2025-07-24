@@ -39,6 +39,24 @@
       -webkit-print-color-adjust: exact;
     }
 
+    /* Ensure legend appears below SVG with proper spacing */
+    .template-legend {
+      margin-top: 0.5in !important;
+      page-break-inside: avoid;
+      clear: both;
+      display: block !important;
+    }
+
+    /* Remove borders from template container and SVG during printing */
+    .template-container {
+      border: none !important;
+      padding: 0 !important;
+    }
+
+    .template-svg {
+      border: none !important;
+    }
+
     /* Ensure the page uses standard print DPI */
     @page {
       margin: 0.5in;

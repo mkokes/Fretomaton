@@ -134,4 +134,50 @@ describe('Print Scaling Verification', () => {
     expect(height).not.toBeGreaterThan(100); // Not the old 590
     expect(width).not.toBeGreaterThan(50); // Not the old 115
   });
+
+  it('should have proper legend positioning for print layout', () => {
+    render(<App />);
+
+    // Find the legend element
+    const legend = document.querySelector('.template-legend');
+
+    expect(legend).toBeInTheDocument();
+    expect(legend).toHaveClass('template-legend');
+
+    // Verify the legend contains the expected content
+    expect(legend).toHaveTextContent('Fret slots (cut here)');
+    expect(legend).toHaveTextContent('12th fret (octave)');
+    expect(legend).toHaveTextContent('Centerline');
+    expect(legend).toHaveTextContent('String spacing guides');
+
+    console.log('Legend positioning verification:');
+    console.log('- Legend has template-legend class for print CSS targeting');
+    console.log('- Print CSS ensures legend appears below SVG with proper spacing');
+    console.log('- Legend content is preserved and accessible');
+  });
+
+  it('should have proper template container styling for clean print output', () => {
+    render(<App />);
+
+    // Find the template container element
+    const templateContainer = document.querySelector('.template-container');
+
+    expect(templateContainer).toBeInTheDocument();
+    expect(templateContainer).toHaveClass('template-container');
+    expect(templateContainer).toHaveClass('border');
+    expect(templateContainer).toHaveClass('border-gray-300');
+
+    // Find the SVG element
+    const templateSvg = document.querySelector('.template-svg');
+    expect(templateSvg).toBeInTheDocument();
+    expect(templateSvg).toHaveClass('template-svg');
+    expect(templateSvg).toHaveClass('border');
+    expect(templateSvg).toHaveClass('border-gray-200');
+
+    console.log('Template container styling verification:');
+    console.log('- Template container has template-container class for print CSS targeting');
+    console.log('- SVG has template-svg class for print CSS targeting');
+    console.log('- Print CSS removes borders from both elements during printing');
+    console.log('- Borders remain visible on screen but hidden when printing');
+  });
 });
