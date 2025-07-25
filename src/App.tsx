@@ -170,9 +170,9 @@ const FretTemplateCalculator = () => {
     const padding = 1; // 1 inch padding on all sides
 
     // Calibration factor to correct for browser/printer scaling discrepancies
-    // Based on measurement: 0.917" actual vs 0.9541" expected = 0.961x factor
-    // To correct: multiply by reciprocal = 1.041x
-    const calibrationFactor = 0.9541 / 0.917; // ≈ 1.041
+    // Based on measurement: 0.89" actual vs 0.9541" expected for tenor ukulele first fret
+    // To correct: multiply by reciprocal = 1.072x
+    const calibrationFactor = 0.9541 / 0.89; // ≈ 1.072
 
     return {
       width: (neckInches + (padding * 2)) * calibrationFactor,

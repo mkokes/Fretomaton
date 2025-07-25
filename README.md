@@ -208,7 +208,7 @@ The templates are designed for 1:1 print accuracy with browser calibration. To v
 - If measurements are ~1.76x larger than expected, check that your printer is set to 100% scale with no auto-scaling
 
 #### Calibration Notes
-The application includes automatic calibration to compensate for browser/printer scaling variations. If your measurements are still slightly off (±2-3%), this is normal due to:
+The application includes automatic calibration to compensate for browser/printer scaling variations. The calibration factor (1.072x) corrects for common scaling discrepancies where printed templates measure approximately 0.89" instead of the expected 0.9541" for the first fret on a tenor ukulele. If your measurements are still slightly off (±2-3%), this is normal due to:
 - Browser-specific SVG rendering differences
 - Printer driver scaling adjustments
 - Paper expansion/contraction
