@@ -15,6 +15,7 @@ A React application for generating precise, printable fretboard templates for gu
 - **String Gauge Selection**: Instrument-specific gauge sets (electric, acoustic, bass, classical, ukulele)
 - **Responsive Design**: Works on desktop and tablet devices
 - **Preset Management**: Quick setup with industry-standard instrument configurations
+- **Installable PWA**: Install to your home screen or desktop and use it offline
 
 ## Technology Stack
 
@@ -65,6 +66,7 @@ npm run dev
 - `npm run dev` - Start development server with hot reload
 - `npm run build` - Typecheck and build for production
 - `npm run preview` - Preview production build locally
+- `npm run generate-pwa-assets` - Regenerate the favicon and PWA icons from `public/fretomaton.png`
 - `npm test` - Run unit tests in watch mode
 - `npm run test:run` - Run tests once without watch mode
 - `npm run test:ui` - Run tests with the Vitest UI
