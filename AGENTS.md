@@ -13,6 +13,8 @@ See [README.md](README.md) for user-facing usage, printing, and deployment detai
 - `src/tests/` and `src/*.test.tsx` — Vitest + Testing Library tests (jsdom; setup in `src/tests/setup.ts`).
 - `vite.config.ts` — Vite + `vite-plugin-pwa` (manifest, auto-updating service worker). Icons in `public/` are generated from `public/fretomaton.png` by `pwa-assets.config.ts` (`npm run generate-pwa-assets`); don't edit them by hand.
 - `.github/workflows/deploy.yml` — CI checks on PRs and pushes; deploys to Pages from `main`.
+- `styleguide/` — vendored copy of the shared mk-styleguide (`tailwind.css` tokens + `STYLEGUIDE.md`). Don't edit it; copy new versions from mk-styleguide.
+- `src/index.css` — imports `styleguide/tailwind.css` (Tailwind v4 via `@tailwindcss/vite`), defines the daisyUI theme from the tokens, and holds the print CSS.
 - `deploy*.sh`, `check-remote.sh` — optional rsync deployment to a self-hosted server, configured with `.env` (see `.env.example`).
 
 ## Commands
@@ -36,6 +38,12 @@ npm run build          # tsc -b && vite build -> dist/
 - Linting is oxlint (`.oxlintrc.json`) with the typescript, react, oxc, unicorn, and vitest plugins. `correctness` rules are errors; `suspicious` rules are warnings. Lint must pass with 0 errors.
 - Internal calculations run in the currently selected unit (`inches` or `mm`). Switching units converts all state values. The SVG always renders in **inches** (`toInchesForSVG`) so 1 SVG unit = 1 inch.
 - Prefer deriving values with `useMemo` over syncing state in `useEffect` (oxlint's `react/set-state-in-effect` is an error).
+- **Styling** follows `styleguide/STYLEGUIDE.md`:
+  - Use the token utilities (`text-link`, `text-text-muted`, `bg-surface`, `text-danger`...) or the daisyUI component classes. The daisyUI theme points at the same token variables.
+  - Don't add raw Tailwind palette colours (`gray-*`, `yellow-*`...).
+  - Lime (`primary`) is a fill only; never use `text-primary` on light backgrounds. Use `text-link` instead.
+  - Dark mode follows the OS preference, or `<html data-theme="dark|light">` when set.
+- The template SVG is a printable paper template. It always stays black on white (`bg-white`), whatever the colour mode, and its line colours must match the legend.
 - Commit messages use Conventional Commit prefixes (`feat:`, `fix:`, `docs:`, `chore:`).
 
 ## Gotchas

@@ -161,14 +161,14 @@ describe('Print Scaling Verification', () => {
 
     // Find the template container element (now inside a DaisyUI card)
     const templateContainer = document.querySelector('.template-container');
-    const templateCard = document.querySelector('.card.bg-base-100.shadow-xl');
+    const templateCard = document.querySelector('.card.bg-base-100.shadow-sm');
 
     expect(templateContainer).toBeInTheDocument();
     expect(templateContainer).toHaveClass('template-container');
     expect(templateCard).toBeInTheDocument();
     expect(templateCard).toHaveClass('card');
     expect(templateCard).toHaveClass('bg-base-100');
-    expect(templateCard).toHaveClass('shadow-xl');
+    expect(templateCard).toHaveClass('shadow-sm');
 
     // Find the SVG element
     const templateSvg = document.querySelector('.template-svg');
@@ -176,6 +176,8 @@ describe('Print Scaling Verification', () => {
     expect(templateSvg).toHaveClass('template-svg');
     expect(templateSvg).toHaveClass('border');
     expect(templateSvg).toHaveClass('border-gray-200');
+    // The template is paper: white background in both colour modes.
+    expect(templateSvg).toHaveClass('bg-white');
 
     console.log('Template container styling verification:');
     console.log('- Template container has template-container class for print CSS targeting');

@@ -7,11 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Restyled with the shared mk-styleguide design system: lime, greys, Poppins and Inter, with light and dark modes following the OS. Upgraded to Tailwind CSS 4 so daisyUI 5 runs on the version it targets. Under Tailwind 3 its theme and colour-opacity classes weren't being generated. The template SVG now has an explicit white background so it stays readable in dark mode.
+
+### Removed
+
+- Unused `src/App.css`, `tailwind.config.js` and `postcss.config.js`.
+
 ### Added
 
 - GPL-3.0-or-later license (`LICENSE`).
 - String gauge selection with instrument-specific gauge sets, and per-string bridge compensation recommendations.
-- DaisyUI (`silk` theme) for UI components.
+- DaisyUI for UI components.
 - GitHub Pages deployment via GitHub Actions. CI also runs format, lint, typecheck, and tests on pushes and pull requests to `main`.
 - oxlint and oxfmt for linting and formatting, with `lint:fix`, `format`, `format:check`, `typecheck`, and `check` scripts.
 - Husky pre-push hook that runs `npm run check`.

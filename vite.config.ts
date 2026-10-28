@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 // Ensure the base path has leading and trailing slashes ('/fretomaton' -> '/fretomaton/')
@@ -17,6 +18,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       react(),
+      tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon-180x180.png'],
@@ -25,8 +27,8 @@ export default defineConfig(({ mode }) => {
           short_name: 'Fretomaton',
           description:
             'Printable 1:1 fretboard templates and bridge compensation for guitars, basses, and ukuleles',
-          theme_color: '#1e2023',
-          background_color: '#1e2023',
+          theme_color: '#242424',
+          background_color: '#242424',
           display: 'standalone',
           icons: [
             { src: 'pwa-64x64.png', sizes: '64x64', type: 'image/png' },

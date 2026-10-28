@@ -22,7 +22,7 @@ A React application for generating precise, printable fretboard templates for gu
 - **React 19** with functional components and hooks
 - **TypeScript** for type safety and better development experience
 - **Vite 7** for fast development and optimized builds
-- **Tailwind CSS 3** + **DaisyUI 5** (`silk` theme) for styling
+- **Tailwind CSS 4** + **DaisyUI 5**, themed with the shared [mk-styleguide](https://github.com/mkokes/mk-styleguide) design system (vendored in `styleguide/`)
 - **lucide-react** for icons
 - **Vitest** + Testing Library (jsdom) for unit testing
 - **oxlint** for linting and **oxfmt** for formatting
@@ -280,8 +280,7 @@ src/
 ├── App.tsx             # Main application component (calculator, SVG template, tables)
 ├── App.test.tsx        # App component tests
 ├── SVG.test.tsx        # SVG template tests
-├── App.css             # Application styles
-├── index.css           # Global styles and print CSS
+├── index.css           # Tokens import, daisyUI theme, global styles and print CSS
 └── main.tsx            # Application entry point
 ```
 
