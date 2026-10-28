@@ -8,8 +8,11 @@ import {
   isWoundString,
   getGaugeSetsForInstrument,
   getDefaultGaugeSet,
-  getGaugeSetById
+  getGaugeSetById,
 } from '../utils/bridgeCompensation';
+
+// Convert mm recommendations to inches for comparison
+const mmToInches = (mm: number) => mm / 25.4;
 
 describe('Bridge Compensation Calculations', () => {
   describe('getInstrumentType', () => {
@@ -44,8 +47,8 @@ describe('Bridge Compensation Calculations', () => {
   describe('isWoundString', () => {
     it('should identify wound strings correctly for electric guitar', () => {
       expect(isWoundString(0.009, 'electricGuitar')).toBe(false); // E high
-      expect(isWoundString(0.024, 'electricGuitar')).toBe(true);  // D
-      expect(isWoundString(0.042, 'electricGuitar')).toBe(true);  // E low
+      expect(isWoundString(0.024, 'electricGuitar')).toBe(true); // D
+      expect(isWoundString(0.042, 'electricGuitar')).toBe(true); // E low
     });
 
     it('should identify wound strings correctly for bass', () => {
@@ -63,7 +66,7 @@ describe('Bridge Compensation Calculations', () => {
     it('should calculate higher compensation for wound strings', () => {
       const plainCompensation = calculateStringCompensation(0.009, 'plain', 25.5);
       const woundCompensation = calculateStringCompensation(0.024, 'wound', 25.5);
-      
+
       expect(woundCompensation).toBeGreaterThan(plainCompensation);
       expect(woundCompensation).toBeCloseTo(plainCompensation * 2.5, 1);
     });
@@ -71,14 +74,14 @@ describe('Bridge Compensation Calculations', () => {
     it('should scale compensation with string gauge', () => {
       const lightCompensation = calculateStringCompensation(0.009, 'plain', 25.5);
       const heavyCompensation = calculateStringCompensation(0.012, 'plain', 25.5);
-      
+
       expect(heavyCompensation).toBeGreaterThan(lightCompensation);
     });
 
     it('should scale compensation with scale length', () => {
       const shortScaleComp = calculateStringCompensation(0.024, 'wound', 24.75);
       const longScaleComp = calculateStringCompensation(0.024, 'wound', 25.5);
-      
+
       expect(longScaleComp).toBeGreaterThan(shortScaleComp);
     });
   });
@@ -86,18 +89,20 @@ describe('Bridge Compensation Calculations', () => {
   describe('calculateBridgeRecommendations', () => {
     it('should return valid recommendations for electric guitar', () => {
       const recommendations = calculateBridgeRecommendations(25.5, 24, 'inches');
-      
+
       expect(recommendations.overallPosition).toBeGreaterThan(25.5);
       expect(recommendations.compensations).toHaveLength(6); // 6 strings
       expect(recommendations.compensationRange.min).toBeGreaterThan(0);
-      expect(recommendations.compensationRange.max).toBeGreaterThan(recommendations.compensationRange.min);
+      expect(recommendations.compensationRange.max).toBeGreaterThan(
+        recommendations.compensationRange.min,
+      );
       expect(recommendations.explanation).toContain('intonation');
       expect(recommendations.tips).toHaveLength(5);
     });
 
     it('should return valid recommendations for bass guitar', () => {
       const recommendations = calculateBridgeRecommendations(34.0, 24, 'inches');
-      
+
       expect(recommendations.overallPosition).toBeGreaterThan(34.0);
       expect(recommendations.compensations).toHaveLength(4); // 4 strings
       expect(recommendations.compensationRange.max).toBeGreaterThan(0.01); // Bass needs more compensation
@@ -106,21 +111,24 @@ describe('Bridge Compensation Calculations', () => {
     it('should handle metric units correctly', () => {
       const inchRecommendations = calculateBridgeRecommendations(25.5, 24, 'inches');
       const mmRecommendations = calculateBridgeRecommendations(647.7, 24, 'mm');
-      
-      // Convert mm recommendations to inches for comparison
-      const mmToInches = (mm: number) => mm / 25.4;
-      
-      expect(mmToInches(mmRecommendations.overallPosition)).toBeCloseTo(inchRecommendations.overallPosition, 1);
-      expect(mmToInches(mmRecommendations.compensationRange.min)).toBeCloseTo(inchRecommendations.compensationRange.min, 2);
+
+      expect(mmToInches(mmRecommendations.overallPosition)).toBeCloseTo(
+        inchRecommendations.overallPosition,
+        1,
+      );
+      expect(mmToInches(mmRecommendations.compensationRange.min)).toBeCloseTo(
+        inchRecommendations.compensationRange.min,
+        2,
+      );
     });
 
     it('should provide reasonable compensation values', () => {
       const recommendations = calculateBridgeRecommendations(25.5, 24, 'inches');
-      
+
       // Compensation should be reasonable (typically 0.5-3mm for guitars)
-      recommendations.compensations.forEach(comp => {
+      recommendations.compensations.forEach((comp) => {
         expect(comp.compensation).toBeGreaterThan(0.001); // > 0.001"
-        expect(comp.compensation).toBeLessThan(0.2);      // < 0.2" (5mm)
+        expect(comp.compensation).toBeLessThan(0.2); // < 0.2" (5mm)
         expect(comp.reason).toContain('gauge');
       });
     });
@@ -133,38 +141,42 @@ describe('String Gauge Selection', () => {
       const gaugeSets = getGaugeSetsForInstrument('electricGuitar');
 
       expect(gaugeSets).toHaveLength(4);
-      expect(gaugeSets.map(s => s.id)).toEqual(['light', 'regular', 'medium', 'heavy']);
-      expect(gaugeSets.find(s => s.id === 'light')?.description).toBe('Light (9-42)');
+      expect(gaugeSets.map((s) => s.id)).toEqual(['light', 'regular', 'medium', 'heavy']);
+      expect(gaugeSets.find((s) => s.id === 'light')?.description).toBe('Light (9-42)');
     });
 
     it('should return correct gauge sets for acoustic guitar', () => {
       const gaugeSets = getGaugeSetsForInstrument('acousticGuitar');
 
       expect(gaugeSets).toHaveLength(4);
-      expect(gaugeSets.map(s => s.id)).toEqual(['extraLight', 'light', 'medium', 'heavy']);
-      expect(gaugeSets.find(s => s.id === 'light')?.description).toBe('Light (12-53)');
+      expect(gaugeSets.map((s) => s.id)).toEqual(['extraLight', 'light', 'medium', 'heavy']);
+      expect(gaugeSets.find((s) => s.id === 'light')?.description).toBe('Light (12-53)');
     });
 
     it('should return correct gauge sets for bass guitar', () => {
       const gaugeSets = getGaugeSetsForInstrument('bassGuitar');
 
       expect(gaugeSets).toHaveLength(4);
-      expect(gaugeSets.map(s => s.id)).toEqual(['light', 'medium', 'heavy', 'extraHeavy']);
-      expect(gaugeSets.find(s => s.id === 'medium')?.description).toBe('Medium (45-105)');
+      expect(gaugeSets.map((s) => s.id)).toEqual(['light', 'medium', 'heavy', 'extraHeavy']);
+      expect(gaugeSets.find((s) => s.id === 'medium')?.description).toBe('Medium (45-105)');
     });
 
     it('should return correct gauge sets for classical guitar', () => {
       const gaugeSets = getGaugeSetsForInstrument('classicalGuitar');
 
       expect(gaugeSets).toHaveLength(3);
-      expect(gaugeSets.map(s => s.id)).toEqual(['normalTension', 'highTension', 'extraHighTension']);
+      expect(gaugeSets.map((s) => s.id)).toEqual([
+        'normalTension',
+        'highTension',
+        'extraHighTension',
+      ]);
     });
 
     it('should return correct gauge sets for ukulele', () => {
       const gaugeSets = getGaugeSetsForInstrument('ukulele');
 
       expect(gaugeSets).toHaveLength(3);
-      expect(gaugeSets.map(s => s.id)).toEqual(['standard', 'concert', 'tenor']);
+      expect(gaugeSets.map((s) => s.id)).toEqual(['standard', 'concert', 'tenor']);
     });
   });
 
@@ -212,19 +224,26 @@ describe('String Gauge Selection', () => {
 
   describe('calculateBridgeRecommendations with custom gauges', () => {
     it('should use custom string gauges when provided', () => {
-      const customGauges = [0.008, 0.010, 0.015, 0.022, 0.030, 0.038]; // Super light set
+      const customGauges = [0.008, 0.01, 0.015, 0.022, 0.03, 0.038]; // Super light set
       const recommendations = calculateBridgeRecommendations(25.5, 24, 'inches', customGauges);
 
       expect(recommendations.compensations).toHaveLength(6);
 
       // Custom gauges should result in different compensation than default
       const defaultRecommendations = calculateBridgeRecommendations(25.5, 24, 'inches');
-      expect(recommendations.compensations[0].compensation).not.toBe(defaultRecommendations.compensations[0].compensation);
+      expect(recommendations.compensations[0].compensation).not.toBe(
+        defaultRecommendations.compensations[0].compensation,
+      );
     });
 
     it('should fall back to default gauges when custom gauges not provided', () => {
       const recommendations = calculateBridgeRecommendations(25.5, 24, 'inches');
-      const recommendationsWithUndefined = calculateBridgeRecommendations(25.5, 24, 'inches', undefined);
+      const recommendationsWithUndefined = calculateBridgeRecommendations(
+        25.5,
+        24,
+        'inches',
+        undefined,
+      );
 
       expect(recommendations.compensations).toEqual(recommendationsWithUndefined.compensations);
     });
@@ -291,7 +310,9 @@ describe('Bridge Compensation UI Integration', () => {
 
     // Get initial compensation values
     const initialCompensation = screen.getAllByText(/^\+\d+\.\d+$/);
-    const initialValues = initialCompensation.map(el => parseFloat(el.textContent?.replace('+', '') || '0'));
+    const initialValues = initialCompensation.map((el) =>
+      parseFloat(el.textContent?.replace('+', '') || '0'),
+    );
 
     // Change to heavy gauge set
     const gaugeSelect = screen.getByDisplayValue(/Light \(9-42\)/);
@@ -302,7 +323,9 @@ describe('Bridge Compensation UI Integration', () => {
 
     // Compensation values should be different (heavier strings need more compensation)
     const newCompensation = screen.getAllByText(/^\+\d+\.\d+$/);
-    const newValues = newCompensation.map(el => parseFloat(el.textContent?.replace('+', '') || '0'));
+    const newValues = newCompensation.map((el) =>
+      parseFloat(el.textContent?.replace('+', '') || '0'),
+    );
 
     // Heavy strings should generally need more compensation
     const maxNewCompensation = Math.max(...newValues);
@@ -370,11 +393,11 @@ describe('Bridge Compensation UI Integration', () => {
 
   it('should display string-specific compensation values', () => {
     render(<App />);
-    
+
     // Should show 6 strings for default electric guitar
     expect(screen.getByText('String 1')).toBeInTheDocument();
     expect(screen.getByText('String 6')).toBeInTheDocument();
-    
+
     // Should show compensation values (positive numbers with + prefix)
     const compensationCells = screen.getAllByText(/^\+\d+\.\d+$/);
     expect(compensationCells.length).toBeGreaterThan(0);
@@ -382,14 +405,14 @@ describe('Bridge Compensation UI Integration', () => {
 
   it('should update compensation when units change', () => {
     render(<App />);
-    
+
     // Initially should show inches
     expect(screen.getByText(/Compensation \(inches\)/)).toBeInTheDocument();
-    
+
     // Switch to millimeters
     const mmRadio = screen.getByLabelText('Millimeters');
     fireEvent.click(mmRadio);
-    
+
     // Should now show mm
     expect(screen.getByText(/Compensation \(mm\)/)).toBeInTheDocument();
     expect(screen.getByText(/Saddle Position \(mm\)/)).toBeInTheDocument();
@@ -397,30 +420,32 @@ describe('Bridge Compensation UI Integration', () => {
 
   it('should update compensation when preset changes', () => {
     render(<App />);
-    
+
     // Get initial compensation values
     const initialCompensation = screen.getAllByText(/^\+\d+\.\d+$/);
     const initialCount = initialCompensation.length;
-    
+
     // Switch to bass preset
     const comboboxes = screen.getAllByRole('combobox');
     const presetSelect = comboboxes[0]; // First combobox is the instrument preset
     fireEvent.change(presetSelect, { target: { value: 'bassLongScale' } });
-    
+
     // Should now show 4 strings instead of 6
     const bassCompensation = screen.getAllByText(/^\+\d+\.\d+$/);
     expect(bassCompensation.length).toBe(4);
     expect(bassCompensation.length).toBeLessThan(initialCount);
-    
+
     // Bass should have higher compensation values
-    const bassValues = bassCompensation.map(el => parseFloat(el.textContent?.replace('+', '') || '0'));
+    const bassValues = bassCompensation.map((el) =>
+      parseFloat(el.textContent?.replace('+', '') || '0'),
+    );
     const maxBassCompensation = Math.max(...bassValues);
     expect(maxBassCompensation).toBeGreaterThan(0.01); // Should be > 0.01" for bass
   });
 
   it('should show setup tips and explanations', () => {
     render(<App />);
-    
+
     expect(screen.getByText('Setup Tips')).toBeInTheDocument();
     expect(screen.getByText(/Start with the bridge positioned at/)).toBeInTheDocument();
     expect(screen.getByText(/plain strings need less compensation/)).toBeInTheDocument();
@@ -450,15 +475,15 @@ describe('Bridge Compensation UI Integration', () => {
 
   it('should include bridge compensation in SVG template', () => {
     render(<App />);
-    
+
     // Check that SVG contains compensation zone elements
     const svg = document.querySelector('svg.template-svg');
     expect(svg).toBeInTheDocument();
-    
+
     // Should have compensation zone rectangle
     const compensationZone = svg?.querySelector('rect[fill="orange"]');
     expect(compensationZone).toBeInTheDocument();
-    
+
     // Should have individual string compensation indicators
     const stringIndicators = svg?.querySelectorAll('circle[fill="red"]');
     expect(stringIndicators?.length).toBeGreaterThan(0);
@@ -466,19 +491,19 @@ describe('Bridge Compensation UI Integration', () => {
 
   it('should update SVG compensation zone when scale length changes', () => {
     render(<App />);
-    
+
     const svg = document.querySelector('svg.template-svg');
     const initialCompZone = svg?.querySelector('rect[fill="orange"]');
     const initialHeight = initialCompZone?.getAttribute('height');
-    
+
     // Change scale length
     const scaleInput = screen.getAllByRole('spinbutton')[0] as HTMLInputElement;
     fireEvent.change(scaleInput, { target: { value: '24.75' } });
-    
+
     // Compensation zone should update
     const updatedCompZone = svg?.querySelector('rect[fill="orange"]');
     const updatedHeight = updatedCompZone?.getAttribute('height');
-    
+
     // Heights should be different (different scale lengths need different compensation)
     expect(updatedHeight).not.toBe(initialHeight);
   });

@@ -12,14 +12,6 @@ dist
 dist-ssr
 *.local
 
-# Yarn
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
-
 # Environment variables
 .env
 

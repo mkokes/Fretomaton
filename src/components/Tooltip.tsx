@@ -19,15 +19,11 @@ export const Tooltip = ({ content, children, className = '' }: TooltipProps) => 
       >
         {children || <HelpCircle className="w-4 h-4 text-gray-400 hover:text-gray-600" />}
       </div>
-      
+
       {isVisible && (
         <div className="absolute z-10 px-3 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-lg -top-2 left-full ml-2 w-64">
           <div className="absolute top-3 -left-1 w-2 h-2 bg-gray-900 rotate-45"></div>
-          {typeof content === 'string' ? (
-            <p>{content}</p>
-          ) : (
-            content
-          )}
+          {typeof content === 'string' ? <p>{content}</p> : content}
         </div>
       )}
     </div>
