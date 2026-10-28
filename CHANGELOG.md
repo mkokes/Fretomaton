@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- GPL-3.0-or-later license (`LICENSE`).
 - String gauge selection with instrument-specific gauge sets, and per-string bridge compensation recommendations.
 - DaisyUI (`silk` theme) for UI components.
 - GitHub Pages deployment via GitHub Actions. CI also runs format, lint, typecheck, and tests on pushes and pull requests to `main`.
