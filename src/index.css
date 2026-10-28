@@ -56,6 +56,32 @@
   color-scheme: dark;
 }
 
+/* Soft alerts tint the background with the status colour, so their text uses the text role
+   (status colour on a status tint drops below 4.5:1 in dark mode). The icon and border keep it. */
+.alert.alert-soft {
+  color: var(--color-text);
+}
+
+/*
+ * Printing always uses the light roles, even in dark mode: dark text on white paper. The
+ * !important beats the dark overrides in styleguide/tailwind.css (data-theme and OS preference).
+ */
+@media print {
+  :root {
+    color-scheme: light;
+    --color-bg: #ffffff !important;
+    --color-surface: var(--color-neutral-50) !important;
+    --color-text: var(--color-neutral-950) !important;
+    --color-text-muted: var(--color-neutral-600) !important;
+    --color-border: var(--color-neutral-200) !important;
+    --color-link: var(--color-primary-700) !important;
+    --color-success: var(--color-success-700) !important;
+    --color-warning: var(--color-warning-700) !important;
+    --color-danger: var(--color-danger-600) !important;
+    --color-info: var(--color-info-700) !important;
+  }
+}
+
 @layer base {
   body {
     margin: 0;
