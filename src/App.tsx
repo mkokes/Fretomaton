@@ -194,7 +194,7 @@ const FretTemplateCalculator = () => {
         <div className="hero bg-base-200 rounded-box p-6 mb-6">
           <div className="hero-content text-center">
             <div className="max-w-md">
-              <h1 className="text-4xl font-bold text-primary flex items-center justify-center gap-3 mb-4">
+              <h1 className="text-4xl font-bold text-link flex items-center justify-center gap-3 mb-4">
                 <Guitar className="w-10 h-10" />
                 Fretomaton
               </h1>
@@ -210,9 +210,9 @@ const FretTemplateCalculator = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Controls */}
         <div className="lg:col-span-1 print:hidden">
-          <div className="card bg-base-200 shadow-xl">
+          <div className="card bg-base-200 border border-base-300">
             <div className="card-body">
-              <h2 className="card-title text-primary">
+              <h2 className="card-title text-link">
                 <Settings className="w-5 h-5" />
                 Settings
               </h2>
@@ -351,7 +351,7 @@ const FretTemplateCalculator = () => {
                     </option>
                   ))}
                 </select>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-text-muted mt-1">
                   Current: {selectedGaugeSet.gauges.map((g) => (g * 1000).toFixed(0)).join('-')}
                   {units === 'mm' ? ' (thousandths of inch)' : ' (thousandths)'}
                 </p>
@@ -491,9 +491,9 @@ const FretTemplateCalculator = () => {
         {/* Results and Template */}
         <div className="lg:col-span-2">
           {/* Calculations Table */}
-          <div className="card bg-base-100 shadow-xl mb-8 print:mb-4">
+          <div className="card bg-base-100 border border-base-300 shadow-sm mb-8 print:mb-4">
             <div className="card-body">
-              <h2 className="card-title text-primary mb-4">Fret Positions</h2>
+              <h2 className="card-title text-link mb-4">Fret Positions</h2>
               <div className="overflow-x-auto">
                 <table className="table table-zebra table-sm">
                   <thead>
@@ -532,15 +532,15 @@ const FretTemplateCalculator = () => {
           </div>
 
           {/* Bridge Compensation Recommendations */}
-          <div className="card bg-base-100 shadow-xl mb-8 print:mb-4">
+          <div className="card bg-base-100 border border-base-300 shadow-sm mb-8 print:mb-4">
             <div className="card-body">
-              <h2 className="card-title text-primary mb-4 flex items-center gap-2">
+              <h2 className="card-title text-link mb-4 flex items-center gap-2">
                 <Settings className="w-5 h-5" />
                 Bridge Compensation Recommendations
                 <Tooltip content="Bridge compensation adjusts individual string lengths to achieve perfect intonation. Different strings require different amounts of compensation based on their gauge, tension, and construction." />
               </h2>
 
-              <div className="alert alert-info mb-4">
+              <div className="alert alert-info alert-soft mb-4">
                 <div className="flex items-start gap-2">
                   <Info className="w-5 h-5 flex-shrink-0" />
                   <div>
@@ -614,13 +614,13 @@ const FretTemplateCalculator = () => {
               </div>
 
               {/* Setup tips */}
-              <div className="alert alert-warning">
+              <div className="alert alert-warning alert-soft">
                 <div>
                   <h3 className="font-semibold mb-2">Setup Tips</h3>
-                  <ul className="text-yellow-800 text-sm space-y-1">
+                  <ul className="text-sm space-y-1">
                     {bridgeRecommendations.tips.map((tip, index) => (
                       <li key={index} className="flex items-start gap-2">
-                        <span className="text-yellow-600 mt-1">•</span>
+                        <span className="opacity-70 mt-1">•</span>
                         <span>{tip}</span>
                       </li>
                     ))}
@@ -634,16 +634,16 @@ const FretTemplateCalculator = () => {
                     );
                     const specificTips = getInstrumentSpecificTips(instrumentType);
                     return specificTips.length > 0 ? (
-                      <div className="mt-3 pt-3 border-t border-yellow-300">
-                        <h4 className="font-medium text-yellow-900 mb-1">
+                      <div className="mt-3 pt-3 border-t border-current/30">
+                        <h4 className="font-medium mb-1">
                           {instrumentType.charAt(0).toUpperCase() +
                             instrumentType.slice(1).replace(/([A-Z])/g, ' $1')}{' '}
                           Specific:
                         </h4>
-                        <ul className="text-yellow-800 text-sm space-y-1">
+                        <ul className="text-sm space-y-1">
                           {specificTips.map((tip, index) => (
                             <li key={index} className="flex items-start gap-2">
-                              <span className="text-yellow-600 mt-1">•</span>
+                              <span className="opacity-70 mt-1">•</span>
                               <span>{tip}</span>
                             </li>
                           ))}
@@ -657,20 +657,20 @@ const FretTemplateCalculator = () => {
           </div>
 
           {/* Visual Template */}
-          <div className="card bg-base-100 shadow-xl print:page-break-before">
+          <div className="card bg-base-100 border border-base-300 shadow-sm print:page-break-before">
             <div className="card-body">
-              <h2 className="card-title text-primary mb-4">Template Layout</h2>
+              <h2 className="card-title text-link mb-4">Template Layout</h2>
               <div className="template-container">
-                <div className="text-xs text-gray-600 mb-2">
+                <div className="text-xs text-text-muted mb-2">
                   Scale: {convertUnits(scaleLength)}
                   {units} | Nut: {convertUnits(nutStringWidth)}
                   {units} | Bridge: {convertUnits(bridgeStringWidth)}
                   {units} | {numberOfFrets} frets
                 </div>
-                <div className="text-xs text-red-600 mb-2 font-semibold">
+                <div className="text-xs text-danger mb-2 font-semibold">
                   ⚠️ Print at 100% scale (no scaling) for accurate measurements
                 </div>
-                <div className="text-xs text-blue-600 mb-2">
+                <div className="text-xs text-info mb-2">
                   📏 Calibrated for precise measurements - First fret should measure exactly{' '}
                   {convertUnits(fretPositions[0]?.distance || 0)}
                   {units} when printed
@@ -679,7 +679,7 @@ const FretTemplateCalculator = () => {
                   width={`${getSVGDimensions().width}in`}
                   height={`${getSVGDimensions().height}in`}
                   viewBox={`0 0 ${getSVGDimensions().width} ${getSVGDimensions().height}`}
-                  className="template-svg border border-gray-200"
+                  className="template-svg border border-gray-200 bg-white"
                   style={{ maxWidth: '400px', height: 'auto' }}
                 >
                   {/* Nut label - positioned above the fretboard */}
@@ -939,7 +939,7 @@ const FretTemplateCalculator = () => {
                 </svg>
 
                 {/* Legend */}
-                <div className="mt-4 text-xs text-gray-600 space-y-1 template-legend">
+                <div className="mt-4 text-xs text-text-muted space-y-1 template-legend">
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-0.5 bg-black"></div>
                     <span>Fret slots (cut here)</span>
