@@ -441,3 +441,9 @@ For questions, issues, or feature requests, please open an issue on the GitHub r
 ---
 
 **⚠️ Important Safety Note**: Always verify measurements with a ruler before cutting expensive wood. While this tool has been optimized for 1:1 print accuracy and extensively tested, physical verification is essential for precision woodworking. Test print a small section first to confirm your printer settings produce accurate dimensions.
+
+## License
+
+Copyright (C) 2025-2026 Marty Kokes
+
+Licensed under the GNU General Public License v3.0 or later. See [LICENSE](LICENSE).
