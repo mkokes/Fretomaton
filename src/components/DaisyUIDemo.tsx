@@ -5,7 +5,7 @@ const DaisyUIDemo: React.FC = () => {
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-3xl font-bold text-primary">DaisyUI Components Demo</h1>
-      
+
       {/* Alerts */}
       <div className="space-y-4">
         <h2 className="text-2xl font-semibold">Alerts</h2>
@@ -80,7 +80,9 @@ const DaisyUIDemo: React.FC = () => {
               <span className="label-text">Select</span>
             </label>
             <select className="select select-bordered">
-              <option disabled selected>Pick one</option>
+              <option disabled selected>
+                Pick one
+              </option>
               <option>Option 1</option>
               <option>Option 2</option>
             </select>

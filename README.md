@@ -2,6 +2,8 @@
 
 A React application for generating precise, printable fretboard templates for guitars, basses, ukuleles, and other stringed instruments. This tool helps instrument makers and luthiers create accurate templates for woodworking projects.
 
+**Live app:** https://mkokes.github.io/Fretomaton/ (deployed automatically from `main` via GitHub Pages)
+
 ## Features
 
 - **Precise Calculations**: Uses standard equal temperament formulas for mathematically accurate fret positioning
@@ -9,69 +11,97 @@ A React application for generating precise, printable fretboard templates for gu
 - **Dual Unit System**: Work in metric (mm) or imperial (inches) with real-time conversion
 - **Print-Ready Output**: Generates SVG templates with verified 1:1 scale accuracy for direct use as cutting guides
 - **Real-Time Preview**: See your fretboard template update as you adjust parameters
-- **Comprehensive Validation**: Built-in validation ensures realistic and buildable measurements
+- **Bridge Compensation**: Per-string saddle compensation recommendations based on the selected string gauge set
+- **String Gauge Selection**: Instrument-specific gauge sets (electric, acoustic, bass, classical, ukulele)
 - **Responsive Design**: Works on desktop and tablet devices
 - **Preset Management**: Quick setup with industry-standard instrument configurations
 
 ## Technology Stack
 
-- **React 18+** with functional components and hooks
+- **React 19** with functional components and hooks
 - **TypeScript** for type safety and better development experience
-- **Vite** for fast development and optimized builds
-- **Tailwind CSS** for styling and responsive design
-- **Vitest** for comprehensive unit testing
-- **ESLint** with React-specific configuration
-- **Yarn** for package management
+- **Vite 7** for fast development and optimized builds
+- **Tailwind CSS 3** + **DaisyUI 5** (`silk` theme) for styling
+- **lucide-react** for icons
+- **Vitest** + Testing Library (jsdom) for unit testing
+- **oxlint** for linting and **oxfmt** for formatting
+- **Husky** pre-push hook that runs the full check suite
+- **npm** for package management
 
 ## Quick Start
 
 ### Prerequisites
 
-- Node.js 18+ 
-- Yarn package manager
+- Node.js 20.19+ or 22.12+ (required by Vite 7; CI uses Node 22)
+- npm
 
 ### Installation
 
 1. Clone the repository:
+
 ```bash
-git clone <repository-url>
-cd fretomaton
+git clone https://github.com/mkokes/Fretomaton.git
+cd Fretomaton
 ```
 
 2. Install dependencies:
+
 ```bash
-yarn install
+npm install
 ```
 
+This also installs the Husky git hooks (via the `prepare` script).
+
 3. Start the development server:
+
 ```bash
-yarn dev
+npm run dev
 ```
 
 4. Open your browser to `http://localhost:5173`
 
 ### Available Scripts
 
-- `yarn dev` - Start development server with hot reload
-- `yarn build` - Build for production
-- `yarn preview` - Preview production build locally
-- `yarn test` - Run unit tests
-- `yarn test:ui` - Run tests with UI interface
-- `yarn test:run` - Run tests once without watch mode
-- `yarn lint` - Run ESLint checks
-- `yarn deploy` - Build and deploy to production server
-- `yarn deploy:simple` - Build and show deployment command
+- `npm run dev` - Start development server with hot reload
+- `npm run build` - Typecheck and build for production
+- `npm run preview` - Preview production build locally
+- `npm test` - Run unit tests in watch mode
+- `npm run test:run` - Run tests once without watch mode
+- `npm run test:ui` - Run tests with the Vitest UI
+- `npm run lint` / `npm run lint:fix` - Run oxlint (optionally applying fixes)
+- `npm run format` / `npm run format:check` - Format with oxfmt / verify formatting
+- `npm run typecheck` - Run the TypeScript compiler (`tsc -b`)
+- `npm run check` - Format check, lint, typecheck, and tests (what the pre-push hook and CI run)
+- `npm run deploy` - Build and rsync to your own server (see below)
+- `npm run deploy:simple` - Build and show the rsync command
+
+### Git Hooks
+
+Husky installs a **pre-push** hook (`.husky/pre-push`) that runs `npm run check`. A push is blocked if formatting, linting, type checking, or tests fail. Run `npm run format` to fix formatting issues. In an emergency you can bypass it with `git push --no-verify`, but CI runs the same checks.
 
 ## Deployment
 
-### Environment Setup
+### GitHub Pages (default)
+
+`.github/workflows/deploy.yml` builds and deploys the site to GitHub Pages:
+
+- **Pushes to `main`** (and manual runs via _workflow_dispatch_): run all checks, build, and deploy to https://mkokes.github.io/Fretomaton/
+- **Pull requests to `main`**: run all checks and the build, without deploying
+
+The workflow sets `VITE_BASE_PATH` from `actions/configure-pages`, so the base path always matches the repository name (`/Fretomaton/`, case-sensitive). The repository's Pages source must be set to **GitHub Actions** (Settings → Pages).
+
+### Self-Hosted Server (rsync)
+
+#### Environment Setup
 
 1. **Configure deployment settings**:
+
 ```bash
 cp .env.example .env
 ```
 
 2. **Edit `.env` with your server details**:
+
 ```bash
 # Deployment Configuration
 DEPLOY_REMOTE_USER=your_username
@@ -85,7 +115,7 @@ DEPLOY_LOCAL_DIST_PATH=./dist/
 VITE_BASE_PATH=/fretomaton
 ```
 
-### Subfolder Deployment
+#### Subfolder Deployment
 
 If your application will be deployed to a subfolder (e.g., `https://yourdomain.com/fretomaton/`), configure the `VITE_BASE_PATH` environment variable:
 
@@ -94,47 +124,54 @@ If your application will be deployed to a subfolder (e.g., `https://yourdomain.c
 
 This ensures that all asset paths (JavaScript, CSS, images) are correctly prefixed for your deployment location. The build process will automatically adjust all asset URLs to work with your subfolder configuration.
 
-### Automated Deployment
+#### Automated Deployment
 
 The project includes deployment scripts for easy production deployment:
 
 1. **Full Deployment** (runs tests, builds, and deploys):
+
 ```bash
-yarn deploy
+npm run deploy
 # or
 ./deploy.sh
 ```
 
 2. **Simple Deployment** (runs tests, builds, shows rsync command):
+
 ```bash
-yarn deploy:simple
+npm run deploy:simple
 # or
 ./deploy-simple.sh
 ```
 
 3. **Debug Deployment** (verbose output for troubleshooting):
+
 ```bash
 ./deploy-debug.sh
 ```
 
 4. **Check Remote Server** (inspect current deployment):
+
 ```bash
 ./check-remote.sh
 ```
 
-### Manual Deployment
+#### Manual Deployment
 
 1. Build the project:
+
 ```bash
-yarn build
+npm run build
 ```
 
 2. Deploy using rsync (replace with your server details):
+
 ```bash
 rsync -avz --delete --progress ./dist/ username@server:/path/to/web/directory/
 ```
 
 The deployment scripts will:
+
 - Load configuration from `.env` file
 - Run all tests to ensure code quality
 - Build the project for production
@@ -150,7 +187,7 @@ The deployment scripts will:
 If you see 404 errors for JavaScript or CSS files after deployment, this usually indicates an incorrect `VITE_BASE_PATH` configuration:
 
 1. **Check your deployment URL**: If your app is accessible at `https://yourdomain.com/fretomaton/`, ensure `VITE_BASE_PATH=/fretomaton`
-2. **Rebuild after changing `.env`**: Always run `yarn build` after updating the `VITE_BASE_PATH` value
+2. **Rebuild after changing `.env`**: Always run `npm run build` after updating the `VITE_BASE_PATH` value
 3. **Verify asset paths**: Check the built `dist/index.html` file - asset paths should match your deployment structure
 
 #### Common Base Path Examples
@@ -178,12 +215,13 @@ If deployment fails with SSH errors:
 
 ### Basic Configuration
 
-1. **Select an Instrument Preset**: Choose from 20+ presets including electric guitars, acoustic guitars, bass guitars, classical guitars, and ukuleles for quick setup
+1. **Select an Instrument Preset**: Choose from 20 presets including electric guitars, acoustic guitars, bass guitars, classical guitars, and ukuleles for quick setup
 2. **Adjust Scale Length**: Set the distance from nut to bridge (typically 11-22" for ukuleles, 24-26" for guitars, 30-35" for basses)
 3. **Configure String Spacing**: Set spacing between string centers at both nut and bridge
 4. **Set Neck Width**: Define the width of the neck at nut and bridge
-5. **Choose Fret Count**: Select how many frets to include (1-24 range)
+5. **Choose Fret Count**: Select how many frets to include (12-36)
 6. **Set Fret Wire Width**: Adjust the thickness of fret slots for your fret wire
+7. **Pick a String Gauge Set**: Choose the gauges you plan to use to get per-string bridge compensation recommendations
 
 ### Advanced Options
 
@@ -202,13 +240,17 @@ If deployment fails with SSH errors:
 5. Print and verify accuracy by measuring the first fret distance
 
 #### Verification
+
 The templates are designed for 1:1 print accuracy with browser calibration. To verify:
+
 - **Tenor Ukulele**: First fret should measure exactly 0.9541" (24.23mm) from the nut
 - **Standard Guitar (25.5")**: First fret should measure exactly 1.4309" (36.34mm) from the nut
 - If measurements are ~1.76x larger than expected, check that your printer is set to 100% scale with no auto-scaling
 
 #### Calibration Notes
+
 The application includes automatic calibration to compensate for browser/printer scaling variations. The calibration factor (1.072x) corrects for common scaling discrepancies where printed templates measure approximately 0.89" instead of the expected 0.9541" for the first fret on a tenor ukulele. If your measurements are still slightly off (±2-3%), this is normal due to:
+
 - Browser-specific SVG rendering differences
 - Printer driver scaling adjustments
 - Paper expansion/contraction
@@ -218,15 +260,22 @@ The application includes automatic calibration to compensate for browser/printer
 
 ```
 src/
+├── components/         # Reusable UI components
+│   ├── Tooltip.tsx     # Help tooltip
+│   └── DaisyUIDemo.tsx # DaisyUI component showcase (not rendered by the app)
 ├── data/               # Static data and presets
 │   └── presets.json    # Instrument preset configurations
 ├── types/              # TypeScript type definitions
-│   └── presets.ts      # Preset type definitions
+│   └── presets.ts      # Preset, gauge set, and compensation types
+├── utils/
+│   └── bridgeCompensation.ts    # String gauge sets and bridge compensation math
 ├── tests/              # Unit tests
-│   ├── unitConversion.test.tsx  # Unit conversion tests
-│   ├── printScaling.test.tsx    # SVG scaling and print accuracy tests
-│   └── setup.ts                 # Test configuration
-├── App.tsx             # Main application component
+│   ├── bridgeCompensation.test.tsx  # Gauge selection and compensation tests
+│   ├── printScaling.test.tsx        # SVG scaling and print accuracy tests
+│   ├── tenorUkuleleScaling.test.tsx # Tenor ukulele measurement checks
+│   ├── unitConversion.test.tsx      # Unit conversion tests
+│   └── setup.ts                     # Test configuration
+├── App.tsx             # Main application component (calculator, SVG template, tables)
 ├── App.test.tsx        # App component tests
 ├── SVG.test.tsx        # SVG template tests
 ├── App.css             # Application styles
@@ -234,9 +283,13 @@ src/
 └── main.tsx            # Application entry point
 ```
 
-### Deployment Files
+### Tooling & Deployment Files
 
 ```
+├── .github/workflows/deploy.yml  # CI checks + GitHub Pages deployment
+├── .husky/pre-push     # Runs `npm run check` before every push
+├── .oxlintrc.json      # oxlint configuration
+├── .oxfmtrc.json       # oxfmt configuration
 ├── deploy.sh           # Full automated deployment script
 ├── deploy-simple.sh    # Simple deployment with manual rsync
 ├── deploy-debug.sh     # Verbose deployment for troubleshooting
@@ -255,40 +308,40 @@ fret_position = scale_length - (scale_length / (2^(fret_number/12)))
 
 This ensures that each fret produces a semitone interval, with the 12th fret positioned exactly at half the scale length (octave).
 
-## Validation Rules
+## Input Ranges
 
-The application enforces realistic measurement ranges:
-
-- **Scale Length**: 10-40 inches (254-1016mm) - covers ukuleles to extended range basses
-- **Fret Count**: 1-24 frets
-- **Neck Width**: 0.5-4 inches (12.7-101.6mm) - from narrow ukulele necks to wide bass necks
-- **String Spacing**: 0.5-4 inches (12.7-101.6mm) - nut and bridge string spacing
-- **Fret Wire Width**: 0.01-0.2 inches (0.254-5.08mm) - slot width for fret wire
+- **Fret Count**: the input is limited to 12-36 frets (presets range from 15 to 24)
+- **Other dimensions** (scale length, string spacing, neck width, fret wire width): free numeric inputs with no enforced range. Empty or invalid entries fall back to 0, so double-check values before printing
 
 ## Preset Configurations
 
 ### Electric Guitars
+
 - **Fender Standard**: 25.5" (648mm) scale - Stratocaster/Telecaster
 - **Gibson Standard**: 24.75" (629mm) scale - Les Paul/SG
 - **PRS Standard**: 25" (635mm) scale
 - **Short Scale Electric**: 24" (610mm) scale
 
 ### Acoustic Guitars
+
 - **Martin Standard**: 25.4" (645mm) scale
 - **Taylor Standard**: 24.9" (632mm) scale
 - **Gibson Acoustic**: 24.75" (629mm) scale
 - **Parlor Guitar**: 23.5" (597mm) scale
 
 ### Classical Guitar
+
 - **Classical Guitar**: 25.6" (650mm) scale
 
 ### Bass Guitars
+
 - **Bass Long Scale**: 34" (864mm) scale
 - **Bass Medium Scale**: 32" (813mm) scale
 - **Bass Short Scale**: 30" (762mm) scale
 - **Bass Extra Long Scale**: 35" (889mm) scale
 
 ### Ukuleles
+
 - **Sopranino/Piccolo**: 11" (279mm) scale
 - **Soprano**: 13" (330mm) scale
 - **Concert**: 15" (381mm) scale
@@ -303,21 +356,22 @@ The project includes comprehensive unit tests covering:
 
 - Fret position calculations
 - Unit conversions
-- Form validation
+- String gauge selection and bridge compensation
 - Component behavior
-- Custom hooks
 - SVG scaling and print accuracy
 - Print dimension verification
 
 Run tests with:
+
 ```bash
-yarn test
+npm test
 ```
 
 ### Test Coverage
 
 - **Mathematical Accuracy**: Verifies fret position calculations using equal temperament formulas
 - **Unit Conversion**: Tests conversion between metric and imperial units
+- **Bridge Compensation**: Validates gauge sets per instrument type and compensation calculations
 - **SVG Scaling**: Validates that SVG templates use correct 1:1 scale mapping
 - **Print Verification**: Ensures SVG dimensions match real-world measurements
 - **Component Integration**: Tests user interface components and interactions
@@ -367,18 +421,14 @@ If your printed template doesn't match the expected dimensions:
 2. Create a feature branch
 3. Make your changes
 4. Add tests for new functionality
-5. Ensure all tests pass
-6. Submit a pull request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+5. Run `npm run check` (the pre-push hook runs it for you)
+6. Submit a pull request. CI runs the same checks on every PR
 
 ## Acknowledgments
 
 - Equal temperament mathematics based on standard musical theory
 - Instrument measurements from traditional luthiery practices
-- UI styling powered by Tailwind CSS
+- UI styling powered by Tailwind CSS and DaisyUI
 - Testing framework provided by Vitest
 - SVG rendering for precise, scalable templates
 

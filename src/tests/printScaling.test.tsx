@@ -10,11 +10,11 @@ describe('Print Scaling Verification', () => {
     const templateSvg = document.querySelector('svg.template-svg');
 
     expect(templateSvg).toBeInTheDocument();
-    
+
     // Get viewBox dimensions
     const viewBox = templateSvg?.getAttribute('viewBox');
     const [x, y, width, height] = viewBox?.split(' ').map(Number) || [0, 0, 0, 0];
-    
+
     // For a 25.5" scale length guitar with our new 1:1 scaling:
     // Expected: viewBox height should be ~25.5" + 2" padding = ~27.5"
     // This means 1 SVG unit = 1 real inch, which is correct for printing
@@ -86,8 +86,8 @@ describe('Print Scaling Verification', () => {
     const padding = 1; // inch of padding
 
     // Correct approach: Use real units in viewBox
-    const correctWidth = neckWidth + (padding * 2);
-    const correctHeight = scaleLength + (padding * 2);
+    const correctWidth = neckWidth + padding * 2;
+    const correctHeight = scaleLength + padding * 2;
 
     console.log('Correct SVG dimensions for 1:1 printing:');
     console.log(`- ViewBox should be: 0 0 ${correctWidth} ${correctHeight}`);
