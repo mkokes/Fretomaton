@@ -11,6 +11,7 @@ See [README.md](README.md) for user-facing usage, printing, and deployment detai
 - `src/data/presets.json` + `src/types/presets.ts` — instrument presets (stored in **inches**) and shared types.
 - `src/components/` — `Tooltip.tsx` (used) and `DaisyUIDemo.tsx` (a showcase; not rendered anywhere).
 - `src/tests/` and `src/*.test.tsx` — Vitest + Testing Library tests (jsdom; setup in `src/tests/setup.ts`).
+- `vite.config.ts` — Vite + `vite-plugin-pwa` (manifest, auto-updating service worker). Icons in `public/` are generated from `public/fretomaton.png` by `pwa-assets.config.ts` (`npm run generate-pwa-assets`); don't edit them by hand.
 - `.github/workflows/deploy.yml` — CI checks on PRs and pushes; deploys to Pages from `main`.
 - `deploy*.sh`, `check-remote.sh` — optional rsync deployment to a self-hosted server, configured with `.env` (see `.env.example`).
 
