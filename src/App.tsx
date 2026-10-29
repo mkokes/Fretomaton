@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Printer, Guitar, Info, Settings } from 'lucide-react';
+import { ThemeToggle } from './components/ThemeToggle';
 import presetsData from './data/presets.json';
 import type { PresetInstrument } from './types/presets';
 import {
@@ -191,6 +192,9 @@ const FretTemplateCalculator = () => {
   return (
     <div className="max-w-6xl mx-auto p-6 bg-base-100 min-h-screen">
       <div className="mb-8 print:hidden">
+        <div className="flex justify-end mb-2">
+          <ThemeToggle />
+        </div>
         <div className="hero bg-base-200 rounded-box p-6 mb-6">
           <div className="hero-content text-center">
             <div className="max-w-md">
@@ -207,10 +211,10 @@ const FretTemplateCalculator = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Controls */}
-        <div className="lg:col-span-1 print:hidden">
-          <div className="card bg-base-200 border border-base-300">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 print:flex print:flex-col">
+        {/* Controls and Template (printed after the results) */}
+        <div className="lg:col-span-1 space-y-8 print:order-last">
+          <div className="card bg-base-200 border border-base-300 print:hidden">
             <div className="card-body">
               <h2 className="card-title text-link">
                 <Settings className="w-5 h-5" />
@@ -486,175 +490,6 @@ const FretTemplateCalculator = () => {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Results and Template */}
-        <div className="lg:col-span-2">
-          {/* Calculations Table */}
-          <div className="card bg-base-100 border border-base-300 shadow-sm mb-8 print:mb-4">
-            <div className="card-body">
-              <h2 className="card-title text-link mb-4">Fret Positions</h2>
-              <div className="overflow-x-auto">
-                <table className="table table-zebra table-sm">
-                  <thead>
-                    <tr>
-                      <th>Fret</th>
-                      <th>Distance from Nut ({units})</th>
-                      <th>String Spacing ({units})</th>
-                      <th className="print:hidden">From Previous ({units})</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className="font-medium">0 (Nut)</td>
-                      <td>0.0000</td>
-                      <td>{convertUnits(nutStringWidth)}</td>
-                      <td className="print:hidden">-</td>
-                    </tr>
-                    {fretPositions.map((fret) => (
-                      <tr key={fret.fret} className={fret.fret === 12 ? 'bg-warning/20' : ''}>
-                        <td className="font-medium">{fret.fret}</td>
-                        <td>{convertUnits(fret.distance)}</td>
-                        <td>{convertUnits(getStringSpacingAtFret(fret.fret))}</td>
-                        <td className="print:hidden">{convertUnits(fret.fromPrevious)}</td>
-                      </tr>
-                    ))}
-                    <tr className="bg-base-200">
-                      <td className="font-medium">Bridge</td>
-                      <td>{convertUnits(scaleLength)}</td>
-                      <td>{convertUnits(bridgeStringWidth)}</td>
-                      <td className="print:hidden">-</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          {/* Bridge Compensation Recommendations */}
-          <div className="card bg-base-100 border border-base-300 shadow-sm mb-8 print:mb-4">
-            <div className="card-body">
-              <h2 className="card-title text-link mb-4 flex items-center gap-2">
-                <Settings className="w-5 h-5" />
-                Bridge Compensation Recommendations
-                <Tooltip content="Bridge compensation adjusts individual string lengths to achieve perfect intonation. Different strings require different amounts of compensation based on their gauge, tension, and construction." />
-              </h2>
-
-              <div className="alert alert-info alert-soft mb-4">
-                <div className="flex items-start gap-2">
-                  <Info className="w-5 h-5 flex-shrink-0" />
-                  <div>
-                    <h3 className="font-semibold mb-2">Why Bridge Compensation Matters</h3>
-                    <p className="text-sm mb-3">
-                      When you press a string down at a fret, you slightly increase its tension and
-                      effective length. Thicker strings and wound strings stretch more, requiring
-                      the bridge saddle to be moved back to maintain perfect intonation across all
-                      frets.
-                    </p>
-                    <p className="text-sm mb-2">{bridgeRecommendations.explanation}</p>
-                    <div className="bg-info-content/10 rounded p-3 mt-3">
-                      <p className="text-sm font-medium">
-                        🎸 Selected gauge set:{' '}
-                        <span className="font-mono">{selectedGaugeSet.description}</span>
-                      </p>
-                      <p className="text-sm font-medium mt-1">
-                        📍 Recommended bridge center position:{' '}
-                        <span className="font-mono">
-                          {convertUnits(bridgeRecommendations.overallPosition)}
-                          {units}
-                        </span>{' '}
-                        from nut
-                      </p>
-                      <p className="text-xs mt-1 opacity-70">
-                        This is your starting point - individual saddles will be adjusted from here.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* String-by-string compensation table */}
-              <div className="overflow-x-auto mb-4">
-                <table className="table table-zebra table-sm">
-                  <thead>
-                    <tr>
-                      <th>String</th>
-                      <th>Gauge</th>
-                      <th>
-                        <div className="flex items-center gap-1">
-                          Compensation ({units})
-                          <Tooltip content="Amount to move the bridge saddle back from the theoretical scale length position. Positive values mean moving the saddle away from the nut." />
-                        </div>
-                      </th>
-                      <th>
-                        <div className="flex items-center gap-1">
-                          Saddle Position ({units})
-                          <Tooltip content="Final position of each string's bridge saddle, measured from the nut. This includes the scale length plus compensation." />
-                        </div>
-                      </th>
-                      <th className="print:hidden">Notes</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {bridgeRecommendations.compensations.map((comp, index) => (
-                      <tr key={comp.stringNumber}>
-                        <td className="font-medium">String {comp.stringNumber}</td>
-                        <td className="font-mono text-sm">
-                          .{(selectedGaugeSet.gauges[index] * 1000).toFixed(0).padStart(3, '0')}"
-                        </td>
-                        <td className="font-mono">+{convertUnits(comp.compensation)}</td>
-                        <td className="font-mono">
-                          {convertUnits(scaleLength + comp.compensation)}
-                        </td>
-                        <td className="text-xs opacity-60 print:hidden">{comp.reason}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Setup tips */}
-              <div className="alert alert-warning alert-soft">
-                <div>
-                  <h3 className="font-semibold mb-2">Setup Tips</h3>
-                  <ul className="text-sm space-y-1">
-                    {bridgeRecommendations.tips.map((tip, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <span className="opacity-70 mt-1">•</span>
-                        <span>{tip}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* Instrument-specific tips */}
-                  {(() => {
-                    const instrumentType = getInstrumentType(
-                      units === 'mm' ? scaleLength / 25.4 : scaleLength,
-                      numberOfFrets,
-                    );
-                    const specificTips = getInstrumentSpecificTips(instrumentType);
-                    return specificTips.length > 0 ? (
-                      <div className="mt-3 pt-3 border-t border-current/30">
-                        <h4 className="font-medium mb-1">
-                          {instrumentType.charAt(0).toUpperCase() +
-                            instrumentType.slice(1).replace(/([A-Z])/g, ' $1')}{' '}
-                          Specific:
-                        </h4>
-                        <ul className="text-sm space-y-1">
-                          {specificTips.map((tip, index) => (
-                            <li key={index} className="flex items-start gap-2">
-                              <span className="opacity-70 mt-1">•</span>
-                              <span>{tip}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ) : null;
-                  })()}
-                </div>
-              </div>
-            </div>
-          </div>
 
           {/* Visual Template */}
           <div className="card bg-base-100 border border-base-300 shadow-sm print:page-break-before">
@@ -679,7 +514,7 @@ const FretTemplateCalculator = () => {
                   width={`${getSVGDimensions().width}in`}
                   height={`${getSVGDimensions().height}in`}
                   viewBox={`0 0 ${getSVGDimensions().width} ${getSVGDimensions().height}`}
-                  className="template-svg border border-gray-200 bg-white"
+                  className="template-svg max-w-full! border border-gray-200 bg-white"
                   style={{ maxWidth: '400px', height: 'auto' }}
                 >
                   {/* Nut label - positioned above the fretboard */}
@@ -964,6 +799,175 @@ const FretTemplateCalculator = () => {
                     <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                     <span>Individual string compensation points</span>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Results and Template */}
+        <div className="lg:col-span-2">
+          {/* Calculations Table */}
+          <div className="card bg-base-100 border border-base-300 shadow-sm mb-8 print:mb-4">
+            <div className="card-body">
+              <h2 className="card-title text-link mb-4">Fret Positions</h2>
+              <div className="overflow-x-auto">
+                <table className="table table-zebra table-sm">
+                  <thead>
+                    <tr>
+                      <th>Fret</th>
+                      <th>Distance from Nut ({units})</th>
+                      <th>String Spacing ({units})</th>
+                      <th className="print:hidden">From Previous ({units})</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="font-medium">0 (Nut)</td>
+                      <td>0.0000</td>
+                      <td>{convertUnits(nutStringWidth)}</td>
+                      <td className="print:hidden">-</td>
+                    </tr>
+                    {fretPositions.map((fret) => (
+                      <tr key={fret.fret} className={fret.fret === 12 ? 'bg-warning/20' : ''}>
+                        <td className="font-medium">{fret.fret}</td>
+                        <td>{convertUnits(fret.distance)}</td>
+                        <td>{convertUnits(getStringSpacingAtFret(fret.fret))}</td>
+                        <td className="print:hidden">{convertUnits(fret.fromPrevious)}</td>
+                      </tr>
+                    ))}
+                    <tr className="bg-base-200">
+                      <td className="font-medium">Bridge</td>
+                      <td>{convertUnits(scaleLength)}</td>
+                      <td>{convertUnits(bridgeStringWidth)}</td>
+                      <td className="print:hidden">-</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          {/* Bridge Compensation Recommendations */}
+          <div className="card bg-base-100 border border-base-300 shadow-sm mb-8 print:mb-4">
+            <div className="card-body">
+              <h2 className="card-title text-link mb-4 flex items-center gap-2">
+                <Settings className="w-5 h-5" />
+                Bridge Compensation Recommendations
+                <Tooltip content="Bridge compensation adjusts individual string lengths to achieve perfect intonation. Different strings require different amounts of compensation based on their gauge, tension, and construction." />
+              </h2>
+
+              <div className="alert alert-info alert-soft mb-4">
+                <div className="flex items-start gap-2">
+                  <Info className="w-5 h-5 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-semibold mb-2">Why Bridge Compensation Matters</h3>
+                    <p className="text-sm mb-3">
+                      When you press a string down at a fret, you slightly increase its tension and
+                      effective length. Thicker strings and wound strings stretch more, requiring
+                      the bridge saddle to be moved back to maintain perfect intonation across all
+                      frets.
+                    </p>
+                    <p className="text-sm mb-2">{bridgeRecommendations.explanation}</p>
+                    <div className="bg-info-content/10 rounded p-3 mt-3">
+                      <p className="text-sm font-medium">
+                        🎸 Selected gauge set:{' '}
+                        <span className="font-mono">{selectedGaugeSet.description}</span>
+                      </p>
+                      <p className="text-sm font-medium mt-1">
+                        📍 Recommended bridge center position:{' '}
+                        <span className="font-mono">
+                          {convertUnits(bridgeRecommendations.overallPosition)}
+                          {units}
+                        </span>{' '}
+                        from nut
+                      </p>
+                      <p className="text-xs mt-1 opacity-70">
+                        This is your starting point - individual saddles will be adjusted from here.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* String-by-string compensation table */}
+              <div className="overflow-x-auto mb-4">
+                <table className="table table-zebra table-sm">
+                  <thead>
+                    <tr>
+                      <th>String</th>
+                      <th>Gauge</th>
+                      <th>
+                        <div className="flex items-center gap-1">
+                          Compensation ({units})
+                          <Tooltip content="Amount to move the bridge saddle back from the theoretical scale length position. Positive values mean moving the saddle away from the nut." />
+                        </div>
+                      </th>
+                      <th>
+                        <div className="flex items-center gap-1">
+                          Saddle Position ({units})
+                          <Tooltip content="Final position of each string's bridge saddle, measured from the nut. This includes the scale length plus compensation." />
+                        </div>
+                      </th>
+                      <th className="print:hidden">Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {bridgeRecommendations.compensations.map((comp, index) => (
+                      <tr key={comp.stringNumber}>
+                        <td className="font-medium">String {comp.stringNumber}</td>
+                        <td className="font-mono text-sm">
+                          .{(selectedGaugeSet.gauges[index] * 1000).toFixed(0).padStart(3, '0')}"
+                        </td>
+                        <td className="font-mono">+{convertUnits(comp.compensation)}</td>
+                        <td className="font-mono">
+                          {convertUnits(scaleLength + comp.compensation)}
+                        </td>
+                        <td className="text-xs opacity-60 print:hidden">{comp.reason}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Setup tips */}
+              <div className="alert alert-warning alert-soft">
+                <div>
+                  <h3 className="font-semibold mb-2">Setup Tips</h3>
+                  <ul className="text-sm space-y-1">
+                    {bridgeRecommendations.tips.map((tip, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <span className="opacity-70 mt-1">•</span>
+                        <span>{tip}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Instrument-specific tips */}
+                  {(() => {
+                    const instrumentType = getInstrumentType(
+                      units === 'mm' ? scaleLength / 25.4 : scaleLength,
+                      numberOfFrets,
+                    );
+                    const specificTips = getInstrumentSpecificTips(instrumentType);
+                    return specificTips.length > 0 ? (
+                      <div className="mt-3 pt-3 border-t border-current/30">
+                        <h4 className="font-medium mb-1">
+                          {instrumentType.charAt(0).toUpperCase() +
+                            instrumentType.slice(1).replace(/([A-Z])/g, ' $1')}{' '}
+                          Specific:
+                        </h4>
+                        <ul className="text-sm space-y-1">
+                          {specificTips.map((tip, index) => (
+                            <li key={index} className="flex items-start gap-2">
+                              <span className="opacity-70 mt-1">•</span>
+                              <span>{tip}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null;
+                  })()}
                 </div>
               </div>
             </div>

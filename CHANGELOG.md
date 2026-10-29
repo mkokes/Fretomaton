@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The Template Layout card now sits under Settings in the left column. Printing still puts it after the fret table and bridge compensation, at 1:1 scale.
 - Restyled with the shared mk-styleguide design system: lime, greys, Poppins and Inter, with light and dark modes following the OS. Upgraded to Tailwind CSS 4 so daisyUI 5 runs on the version it targets. Under Tailwind 3 its theme and colour-opacity classes weren't being generated. The template SVG now has an explicit white background so it stays readable in dark mode.
 
 ### Removed
@@ -17,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- System / light / dark theme toggle above the header. The choice is saved in `localStorage` and applied before first paint; System follows the OS.
 - GPL-3.0-or-later license (`LICENSE`).
 - String gauge selection with instrument-specific gauge sets, and per-string bridge compensation recommendations.
 - DaisyUI for UI components.
