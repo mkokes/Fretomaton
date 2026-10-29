@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- GitHub Actions workflow updated to the Node 24 releases of checkout, setup-node, configure-pages, upload-pages-artifact and deploy-pages.
 - The Template Layout card now sits under Settings in the left column. Printing still puts it after the fret table and bridge compensation, at 1:1 scale.
 - Restyled with the shared mk-styleguide design system: lime, greys, Poppins and Inter, with light and dark modes following the OS. Upgraded to Tailwind CSS 4 so daisyUI 5 runs on the version it targets. Under Tailwind 3 its theme and colour-opacity classes weren't being generated. The template SVG now has an explicit white background so it stays readable in dark mode.
 
