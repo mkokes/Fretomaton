@@ -41,7 +41,7 @@
     "@types/react-dom": "^19.1.6",
     "@vite-pwa/assets-generator": "^2.0.0",
     "@vitejs/plugin-react": "^4.6.0",
-    "@vitest/ui": "^3.2.4",
+    "@vitest/ui": "^5.1.0",
     "daisyui": "^5.0.46",
     "husky": "^9.1.7",
     "jsdom": "^26.1.0",
