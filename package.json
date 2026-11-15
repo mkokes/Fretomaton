@@ -26,32 +26,37 @@
     "@fontsource/inter": "^5.3.0",
     "@fontsource/jetbrains-mono": "^5.3.0",
     "@fontsource/poppins": "^5.3.0",
-    "lucide-react": "^0.525.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "lucide-react": "^1.73.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.3",
-    "@testing-library/dom": "^10.4.0",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.3.0",
-    "@testing-library/user-event": "^14.6.1",
-    "@types/node": "^24.1.0",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
+    "@tailwindcss/vite": "^4.3.5",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.10",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "@vite-pwa/assets-generator": "^2.0.0",
-    "@vitejs/plugin-react": "^4.6.0",
-    "@vitest/ui": "^3.2.4",
-    "daisyui": "^5.0.46",
+    "@vitejs/plugin-react": "^6.3.0",
+    "@vitest/ui": "^5.1.0",
+    "daisyui": "^5.8.0",
     "husky": "^9.1.7",
-    "jsdom": "^26.1.0",
-    "oxfmt": "^0.75.0",
-    "oxlint": "^1.90.0",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^4.3.3",
-    "typescript": "~5.8.3",
-    "vite": "^7.0.4",
+    "jsdom": "^31.0.1",
+    "oxfmt": "^0.78.0",
+    "oxlint": "^1.93.0",
+    "postcss": "^8.5.33",
+    "tailwindcss": "^4.3.5",
+    "typescript": "~7.0.2",
+    "vite": "^8.3.8",
     "vite-plugin-pwa": "^2.0.0",
-    "vitest": "^3.2.4"
+    "vitest": "^5.1.0"
+  },
+  "overrides": {
+    "workbox-build": {
+      "glob": "^14.0.6"
+    }
   }
 }
