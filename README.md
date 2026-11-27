@@ -20,11 +20,12 @@ A React application for generating precise, printable fretboard templates for gu
 ## Technology Stack
 
 - **React 19** with functional components and hooks
-- **TypeScript** for type safety and better development experience
-- **Vite 7** for fast development and optimized builds
+- **TypeScript 7** for type safety and better development experience
+- **Vite 8** for fast development and optimized builds
 - **Tailwind CSS 4** + **DaisyUI 5**, themed with the shared [mk-styleguide](https://github.com/mkokes/mk-styleguide) design system (vendored in `styleguide/`)
+- **vite-plugin-pwa 2** for installable offline PWA support + **@fontsource** self-hosted fonts (`Inter`, `Poppins`, `JetBrains Mono`)
 - **lucide-react** for icons
-- **Vitest** + Testing Library (jsdom) for unit testing
+- **Vitest 5** + Testing Library (jsdom) for unit testing
 - **oxlint** for linting and **oxfmt** for formatting
 - **Husky** pre-push hook that runs the full check suite
 - **npm** for package management
@@ -33,7 +34,7 @@ A React application for generating precise, printable fretboard templates for gu
 
 ### Prerequisites
 
-- Node.js 20.19+ or 22.12+ (required by Vite 7; CI uses Node 22)
+- Node.js 20.19+ or 22.12+ (CI uses Node 22)
 - npm
 
 ### Installation
@@ -263,6 +264,7 @@ The application includes automatic calibration to compensate for browser/printer
 ```
 src/
 ├── components/         # Reusable UI components
+│   ├── ThemeToggle.tsx # System / light / dark theme switcher
 │   ├── Tooltip.tsx     # Help tooltip
 │   └── DaisyUIDemo.tsx # DaisyUI component showcase (not rendered by the app)
 ├── data/               # Static data and presets
@@ -270,7 +272,8 @@ src/
 ├── types/              # TypeScript type definitions
 │   └── presets.ts      # Preset, gauge set, and compensation types
 ├── utils/
-│   └── bridgeCompensation.ts    # String gauge sets and bridge compensation math
+│   ├── bridgeCompensation.ts    # String gauge sets and bridge compensation math
+│   └── theme.ts                 # Theme preference store (system/light/dark)
 ├── tests/              # Unit tests
 │   ├── bridgeCompensation.test.tsx  # Gauge selection and compensation tests
 │   ├── printScaling.test.tsx        # SVG scaling and print accuracy tests
@@ -291,6 +294,11 @@ src/
 ├── .husky/pre-push     # Runs `npm run check` before every push
 ├── .oxlintrc.json      # oxlint configuration
 ├── .oxfmtrc.json       # oxfmt configuration
+├── pwa-assets.config.ts # PWA icon generation config
+├── styleguide/         # Vendored mk-styleguide tokens and docs
+├── public/             # Source icon & generated PWA/favicon assets
+├── tsconfig.app.json   # App TypeScript config
+├── tsconfig.node.json  # Tooling TypeScript config
 ├── deploy.sh           # Full automated deployment script
 ├── deploy-simple.sh    # Simple deployment with manual rsync
 ├── deploy-debug.sh     # Verbose deployment for troubleshooting
